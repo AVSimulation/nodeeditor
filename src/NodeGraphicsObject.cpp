@@ -185,7 +185,8 @@ moveConnections() const
             std::make_tuple(_nodeId, portIndex, cn.first, cn.second);
 
           auto cgo = nodeScene()->connectionGraphicsObject(connectionId);
-
+          // usefull during full graph load where all the nodes are not yet loaded 
+          if(cgo)
           // TODO: Directly move the connection's end?
           cgo->move();
         }

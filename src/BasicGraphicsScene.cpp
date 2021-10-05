@@ -169,46 +169,36 @@ traverseGraphAndPopulateGraphicsObjects()
 {
   auto allNodeIds = _graphModel.allNodeIds();
 
-  while (!allNodeIds.empty())
+  for (auto nodeId : allNodeIds)
   {
-    std::queue<NodeId> fifo;
-
-    auto firstId = *allNodeIds.begin();
-    allNodeIds.erase(firstId);
-
-    fifo.push(firstId);
-
-    while (!fifo.empty())
-    {
-      auto nodeId = fifo.front();
-      fifo.pop();
-
       _nodeGraphicsObjects[nodeId] =
-        std::make_unique<NodeGraphicsObject>(*this, nodeId);
+          std::make_unique<NodeGraphicsObject>(*this, nodeId);
+  }
 
+  for (auto nodeId : allNodeIds)
+  {
       unsigned int nOutPorts =
-        _graphModel.nodeData(nodeId, NodeRole::NumberOfOutPorts).toUInt();
+          _graphModel.nodeData(nodeId, NodeRole::NumberOfOutPorts).toUInt();
 
       for (PortIndex index = 0; index < nOutPorts; ++index)
       {
-        auto connectedNodes =
-          _graphModel.connectedNodes(nodeId,
-                                     PortType::Out,
-                                     index);
+          auto connectedNodes =
+              _graphModel.connectedNodes(nodeId,
+                  PortType::Out,
+                  index);
 
-        for (auto cn : connectedNodes)
-        {
-          fifo.push(cn.second);
-          allNodeIds.erase(cn.second);
+          for (auto cn : connectedNodes)
+          {
 
-          auto connectionId = std::make_tuple(nodeId, index, cn.first, cn.second);
-
-          _connectionGraphicsObjects[connectionId] =
-            std::make_unique<ConnectionGraphicsObject>(*this,
-                                                       connectionId);
-        }
+              auto connectionId = std::make_tuple(nodeId, index, cn.first, cn.second);
+              if (_connectionGraphicsObjects.find(connectionId) == _connectionGraphicsObjects.end())
+              {
+                  _connectionGraphicsObjects[connectionId] =
+                      std::make_unique<ConnectionGraphicsObject>(*this,
+                          connectionId);
+              }
+          }
       }
-    } // while
   }
 }
 
