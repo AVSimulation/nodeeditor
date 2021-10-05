@@ -106,7 +106,7 @@ void
 BasicGraphicsScene::
 resetDraftConnection()
 {
-  _draftConnection.reset();
+    _draftConnection->hide();
 }
 
 

@@ -92,7 +92,7 @@ tryConnect() const
                              _ngo.nodeId(),
                              targetPortIndex);
 
-  _ngo.nodeScene()->resetDraftConnection();
+  //_ngo.nodeScene()->resetDraftConnection();
 
   // 3. Adjust Connection geometry.
 
