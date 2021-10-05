@@ -33,6 +33,14 @@ public:
 
   ~ConnectionGraphicsObject() = default;
 
+  ConnectionGraphicsObject(ConnectionGraphicsObject const&) = delete;
+  ConnectionGraphicsObject(ConnectionGraphicsObject&&) = delete;
+
+  ConnectionGraphicsObject&
+      operator=(ConnectionGraphicsObject const&) = delete;
+  ConnectionGraphicsObject&
+      operator=(ConnectionGraphicsObject&&) = delete;
+
 public:
   AbstractGraphModel &
   graphModel() const;
