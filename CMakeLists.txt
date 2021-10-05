@@ -55,6 +55,39 @@ qt5_add_resources(RESOURCES ./resources/resources.qrc)
 # We'll have to manually specify some files
 set(CMAKE_AUTOMOC ON)
 
+set(CPP_HEADER_FILES
+include/nodes/internal/AbstractGraphModel.hpp
+include/nodes/internal/BasicGraphicsScene.hpp
+include/nodes/internal/Compiler.hpp
+include/nodes/internal/ConnectionGraphicsObject.hpp
+include/nodes/internal/ConnectionIdHash.hpp
+include/nodes/internal/ConnectionIdUtils.hpp
+include/nodes/internal/ConnectionState.hpp
+include/nodes/internal/ConnectionStyle.hpp
+include/nodes/internal/DataFlowGraphicsScene.hpp
+include/nodes/internal/DataFlowGraphModel.hpp
+include/nodes/internal/DataModelRegistry.hpp
+include/nodes/internal/Definitions.hpp
+include/nodes/internal/Export.hpp
+include/nodes/internal/GraphicsView.hpp
+include/nodes/internal/GraphicsViewStyle.hpp
+include/nodes/internal/locateNode.hpp
+include/nodes/internal/NodeData.hpp
+include/nodes/internal/NodeDataModel.hpp
+include/nodes/internal/NodeGeometry.hpp
+include/nodes/internal/NodeGraphicsObject.hpp
+include/nodes/internal/NodePainterDelegate.hpp
+include/nodes/internal/NodeState.hpp
+include/nodes/internal/NodeStyle.hpp
+include/nodes/internal/OperatingSystem.hpp
+include/nodes/internal/PortType.hpp
+include/nodes/internal/QStringStdHash.hpp
+include/nodes/internal/QUuidStdHash.hpp
+include/nodes/internal/Serializable.hpp
+include/nodes/internal/Style.hpp
+include/nodes/internal/StyleCollection.hpp
+)
+
 set(CPP_SOURCE_FILES
   src/AbstractGraphModel.cpp
   src/BasicGraphicsScene.cpp
@@ -80,7 +113,7 @@ set(CPP_SOURCE_FILES
 
 # If we want to give the option to build a static library,
 # set BUILD_SHARED_LIBS option to OFF
-add_library(nodes ${CPP_SOURCE_FILES} ${RESOURCES})
+add_library(nodes ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES} ${RESOURCES})
 
 add_library(QtNodes::nodes ALIAS nodes)
 
