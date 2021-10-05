@@ -1,8 +1,11 @@
 #pragma once
 
 #include <limits>
+#include <tuple>
 
 #include <QtCore/QMetaObject>
+
+#include "Export.hpp"
 
 /**
  * @file
@@ -11,7 +14,7 @@
 
 namespace QtNodes
 {
-Q_NAMESPACE
+NODE_EDITOR_PUBLIC Q_NAMESPACE
 
 /**
  * Constants used for fetching QVariant data from GraphModel.
