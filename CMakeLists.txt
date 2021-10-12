@@ -42,12 +42,14 @@ endif()
 
 add_subdirectory(external)
 
-# Find the QtWidgets library
-find_package(Qt5 5.3 COMPONENTS
-             Core
-             Widgets
-             Gui
-             OpenGL)
+
+
+# Find the Externals library
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+FIND_PACKAGE(Qt5OpenGL REQUIRED)
+FIND_PACKAGE(Qt5Core REQUIRED)
+FIND_PACKAGE(Qt5Gui REQUIRED)
+
 
 qt5_add_resources(RESOURCES ./resources/resources.qrc)
 
