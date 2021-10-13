@@ -113,6 +113,8 @@ set(CPP_SOURCE_FILES
   src/locateNode.cpp
 )
 
+SOURCE_GROUP(Sources FILES ${CPP_SOURCE_FILES})
+
 # If we want to give the option to build a static library,
 # set BUILD_SHARED_LIBS option to OFF
 add_library(nodes ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES} ${RESOURCES})
