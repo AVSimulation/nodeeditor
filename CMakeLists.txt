@@ -60,6 +60,7 @@ set(CMAKE_AUTOMOC ON)
 set(CPP_HEADER_FILES
 include/nodes/internal/AbstractGraphModel.hpp
 include/nodes/internal/BasicGraphicsScene.hpp
+include/nodes/internal/ConnectionDeleteCommand.hpp
 include/nodes/internal/Compiler.hpp
 include/nodes/internal/ConnectionGraphicsObject.hpp
 include/nodes/internal/ConnectionIdHash.hpp
@@ -93,6 +94,7 @@ include/nodes/internal/StyleCollection.hpp
 set(CPP_SOURCE_FILES
   src/AbstractGraphModel.cpp
   src/BasicGraphicsScene.cpp
+  src/ConnectionDeleteCommand.cpp
   src/ConnectionGraphicsObject.cpp
   src/ConnectionPainter.cpp
   src/ConnectionState.cpp

@@ -24,9 +24,7 @@
 using QtNodes::GraphicsView;
 using QtNodes::BasicGraphicsScene;
 
-GraphicsView::
-GraphicsView(QWidget *parent)
-  : QGraphicsView(parent)
+GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
   , _clearSelectionAction(Q_NULLPTR)
   , _deleteSelectionAction(Q_NULLPTR)
 {
@@ -34,49 +32,36 @@ GraphicsView(QWidget *parent)
   setRenderHint(QPainter::Antialiasing);
 
   auto const &flowViewStyle = StyleCollection::flowViewStyle();
-
   setBackgroundBrush(flowViewStyle.BackgroundColor);
-
   //setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   //setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
   setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-
   setCacheMode(QGraphicsView::CacheBackground);
-
   //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 }
 
 
-GraphicsView::
-GraphicsView(BasicGraphicsScene *scene, QWidget *parent)
-  : GraphicsView(parent)
+GraphicsView::GraphicsView(BasicGraphicsScene *scene, QWidget *parent) : GraphicsView(parent)
 {
   setScene(scene);
 }
 
 
-QAction*
-GraphicsView::
-clearSelectionAction() const
+QAction* GraphicsView::clearSelectionAction() const
 {
   return _clearSelectionAction;
 }
 
 
-QAction*
-GraphicsView::
-deleteSelectionAction() const
+QAction* GraphicsView::deleteSelectionAction() const
 {
   return _deleteSelectionAction;
 }
 
 
-void
-GraphicsView::
-setScene(BasicGraphicsScene *scene)
+void GraphicsView::setScene(BasicGraphicsScene *scene)
 {
   QGraphicsView::setScene(scene);
 
@@ -97,9 +82,7 @@ setScene(BasicGraphicsScene *scene)
 }
 
 
-void
-GraphicsView::
-centerScene()
+void GraphicsView::centerScene()
 {
   if (scene())
   {
@@ -118,9 +101,7 @@ centerScene()
 }
 
 
-void
-GraphicsView::
-contextMenuEvent(QContextMenuEvent *event)
+void GraphicsView::contextMenuEvent(QContextMenuEvent *event)
 {
   if (itemAt(event->pos()))
   {
@@ -139,9 +120,7 @@ contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-void
-GraphicsView::
-wheelEvent(QWheelEvent *event)
+void GraphicsView::wheelEvent(QWheelEvent *event)
 {
   QPoint delta = event->angleDelta();
 
@@ -160,9 +139,7 @@ wheelEvent(QWheelEvent *event)
 }
 
 
-void
-GraphicsView::
-scaleUp()
+void GraphicsView::scaleUp()
 {
   double const step   = 1.2;
   double const factor = std::pow(step, 1.0);
@@ -176,9 +153,7 @@ scaleUp()
 }
 
 
-void
-GraphicsView::
-scaleDown()
+void GraphicsView::scaleDown()
 {
   double const step   = 1.2;
   double const factor = std::pow(step, -1.0);
@@ -187,9 +162,7 @@ scaleDown()
 }
 
 
-void
-GraphicsView::
-deleteSelectedObjects()
+void GraphicsView::deleteSelectedObjects()
 {
   // Delete the selected connections first, ensuring that they won't be
   // automatically deleted when selected nodes are deleted (deleting a
@@ -217,9 +190,18 @@ deleteSelectedObjects()
 }
 
 
-void
-GraphicsView::
-keyPressEvent(QKeyEvent *event)
+QAction* GraphicsView::undoAction()
+{
+    return nodeScene()->undoAction();
+}
+
+QAction* GraphicsView::redoAction()
+{
+    return nodeScene()->redoAction();
+}
+
+
+void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
   switch (event->key())
   {
@@ -235,9 +217,7 @@ keyPressEvent(QKeyEvent *event)
 }
 
 
-void
-GraphicsView::
-keyReleaseEvent(QKeyEvent *event)
+void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
   switch (event->key())
   {
@@ -252,9 +232,7 @@ keyReleaseEvent(QKeyEvent *event)
 }
 
 
-void
-GraphicsView::
-mousePressEvent(QMouseEvent *event)
+void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
   QGraphicsView::mousePressEvent(event);
   if (event->button() == Qt::LeftButton)
@@ -264,9 +242,7 @@ mousePressEvent(QMouseEvent *event)
 }
 
 
-void
-GraphicsView::
-mouseMoveEvent(QMouseEvent *event)
+void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
   QGraphicsView::mouseMoveEvent(event);
   if (scene()->mouseGrabberItem() == nullptr && event->buttons() == Qt::LeftButton)
@@ -281,9 +257,7 @@ mouseMoveEvent(QMouseEvent *event)
 }
 
 
-void
-GraphicsView::
-drawBackground(QPainter* painter, const QRectF &r)
+void GraphicsView::drawBackground(QPainter* painter, const QRectF &r)
 {
   QGraphicsView::drawBackground(painter, r);
 
@@ -331,9 +305,7 @@ drawBackground(QPainter* painter, const QRectF &r)
 }
 
 
-void
-GraphicsView::
-showEvent(QShowEvent *event)
+void GraphicsView::showEvent(QShowEvent *event)
 {
   QGraphicsView::showEvent(event);
 
@@ -342,9 +314,7 @@ showEvent(QShowEvent *event)
 }
 
 
-BasicGraphicsScene *
-GraphicsView::
-nodeScene()
+BasicGraphicsScene* GraphicsView::nodeScene()
 {
   return dynamic_cast<BasicGraphicsScene*>(scene());
 }
