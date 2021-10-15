@@ -150,7 +150,8 @@ public:
   setPortData(NodeId    nodeId,
               PortType  portType,
               PortIndex index,
-              PortRole  role) const = 0;
+              PortRole  role,
+	      QVariant  value) = 0;
 
   virtual
   bool
