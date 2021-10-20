@@ -10,6 +10,11 @@
 #include "NodeGraphicsObject.hpp"
 #include "BasicGraphicsScene.hpp"
 
+#include "BasicGraphicsScene.hpp"
+//#include "CreateConnectionCommand.hpp"
+//#include "DeleteConnectionCommand.hpp"
+
+
 
 namespace QtNodes
 {
@@ -99,9 +104,13 @@ tryConnect() const
   //_ngo.moveConnections();
   //_ngo.nodeState().resetReactionToConnection();
 
+  //---------
   AbstractGraphModel & model = _ngo.nodeScene()->graphModel();
-
   model.addConnection(newConnectionId);
+  //---------
+
+  //QUndoCommand* createConnectionCmd = new CreateConnectionCommand(newConnectionId, &_scene);
+  //_scene.getUndoStack()->push(createConnectionCmd);
 
   return true;
 }
@@ -114,6 +123,8 @@ disconnect(PortType portToDisconnect) const
   ConnectionId connectionId = _cgo.connectionId();
 
   _scene.graphModel().deleteConnection(connectionId);
+  //QUndoCommand* deleteConnectionCmd = new DeleteConnectionCommand(connectionId, &_scene);
+  //_scene.getUndoStack()->push(deleteConnectionCmd);
 
   NodeGeometry nodeGeometry(_ngo);
 

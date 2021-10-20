@@ -24,9 +24,9 @@ namespace QtNodes
 		void setScene(BasicGraphicsScene *scene);
 		void centerScene();
 
-		// undo & redo
-		QAction* undoAction();
-		QAction* redoAction();
+		// Call undo & redo depuis l'applicatif
+		void undoAction();
+		void redoAction();
 
 	public Q_SLOTS:
 		void scaleUp();

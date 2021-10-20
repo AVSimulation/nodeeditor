@@ -20,7 +20,6 @@
 
 #include <QtCore/QDebug>
 
-#include "ConnectionDeleteCommand.hpp"
 #include "ConnectionGraphicsObject.hpp"
 #include "ConnectionIdUtils.hpp"
 #include "GraphicsView.hpp"
@@ -34,7 +33,7 @@ namespace QtNodes
     BasicGraphicsScene::BasicGraphicsScene(AbstractGraphModel &graphModel, QObject* parent) :
         QGraphicsScene(parent),
         _graphModel(graphModel),
-        myUndoStack(this)
+        myUndoStack(new QUndoStack(this))
     {
 
       connect(&_graphModel, &AbstractGraphModel::connectionCreated,
@@ -69,7 +68,9 @@ namespace QtNodes
     }
 
     //------------------------------------------------------------------------------------------
-    BasicGraphicsScene::~BasicGraphicsScene() = default;
+    BasicGraphicsScene::~BasicGraphicsScene()
+    {
+    }
 
     //------------------------------------------------------------------------------------------
     AbstractGraphModel const& BasicGraphicsScene::graphModel() const
@@ -86,15 +87,15 @@ namespace QtNodes
     //------------------------------------------------------------------------------------------
     std::unique_ptr<ConnectionGraphicsObject> const& BasicGraphicsScene::makeDraftConnection(ConnectionId const incompleteConnectionId)
     {
-      _draftConnection = std::make_unique<ConnectionGraphicsObject>(*this, incompleteConnectionId);
-      _draftConnection->grabMouse();
-      return _draftConnection;
+      myDraftConnection = std::make_unique<ConnectionGraphicsObject>(*this, incompleteConnectionId);
+      myDraftConnection->grabMouse();
+      return myDraftConnection;
     }
 
     //------------------------------------------------------------------------------------------
     void BasicGraphicsScene::resetDraftConnection()
     {
-        _draftConnection->hide();
+        myDraftConnection->hide();
     }
 
     //------------------------------------------------------------------------------------------
@@ -126,9 +127,9 @@ namespace QtNodes
     ConnectionGraphicsObject* BasicGraphicsScene::connectionGraphicsObject(ConnectionId connectionId)
     {
       ConnectionGraphicsObject* cgo = nullptr;
-      auto it = _connectionGraphicsObjects.find(connectionId);
+      auto it = myConnectionGraphicsObjects.find(connectionId);
 
-      if (it != _connectionGraphicsObjects.end())
+      if (it != myConnectionGraphicsObjects.end())
       {
         cgo = it->second.get();
       }
@@ -170,9 +171,9 @@ namespace QtNodes
               {
 
                   auto connectionId = std::make_tuple(nodeId, index, cn.first, cn.second);
-                  if (_connectionGraphicsObjects.find(connectionId) == _connectionGraphicsObjects.end())
+                  if (myConnectionGraphicsObjects.find(connectionId) == myConnectionGraphicsObjects.end())
                   {
-                      _connectionGraphicsObjects[connectionId] =
+                      myConnectionGraphicsObjects[connectionId] =
                           std::make_unique<ConnectionGraphicsObject>(*this,
                               connectionId);
                   }
@@ -193,44 +194,28 @@ namespace QtNodes
     }
 
     //------------------------------------------------------------------------------------------
-    QAction* BasicGraphicsScene::undoAction()
-    {
-        return myUndoStack.createUndoAction(this);
-    }
-
-    //------------------------------------------------------------------------------------------
-    QAction* BasicGraphicsScene::redoAction()
-    {
-        return myUndoStack.createRedoAction(this);
-    }
-
-    //------------------------------------------------------------------------------------------
     void BasicGraphicsScene::onConnectionDeleted(ConnectionId const connectionId)
     {
-        auto it = _connectionGraphicsObjects.find(connectionId);
-        if (it != _connectionGraphicsObjects.end())
+        auto it = myConnectionGraphicsObjects.find(connectionId);
+        if (it != myConnectionGraphicsObjects.end())
         {
-            _connectionGraphicsObjects.erase(it);
+            myConnectionGraphicsObjects.erase(it);
         }
 
         // TODO: do we need it?
-        if (_draftConnection && _draftConnection->connectionId() == connectionId)
+        if (myDraftConnection && myDraftConnection->connectionId() == connectionId)
         {
-            _draftConnection.reset();
+            myDraftConnection.reset();
         }
 
         updateAttachedNodes(connectionId, PortType::Out);
         updateAttachedNodes(connectionId, PortType::In);
-
-
-        //ConnectionDeletedCommand* cnxDelCommand = new ConnectionDeletedCommand();
-        //myUndoStack.push(cnxDeleteCommand);
     }
 
     //------------------------------------------------------------------------------------------
     void BasicGraphicsScene::onConnectionCreated(ConnectionId const connectionId)
     {
-      _connectionGraphicsObjects[connectionId] = std::make_unique<ConnectionGraphicsObject>(*this, connectionId);
+      myConnectionGraphicsObjects[connectionId] = std::make_unique<ConnectionGraphicsObject>(*this, connectionId);
 
       updateAttachedNodes(connectionId, PortType::Out);
       updateAttachedNodes(connectionId, PortType::In);
@@ -249,7 +234,7 @@ namespace QtNodes
     //------------------------------------------------------------------------------------------
     void BasicGraphicsScene::onNodeCreated(NodeId const nodeId)
     {
-      _nodeGraphicsObjects[nodeId] = std::make_unique<NodeGraphicsObject>(*this, nodeId);
+        _nodeGraphicsObjects[nodeId] = std::make_unique<NodeGraphicsObject>(*this, nodeId);
     }
 
     //------------------------------------------------------------------------------------------
@@ -258,8 +243,7 @@ namespace QtNodes
       auto node = nodeGraphicsObject(nodeId);
       if (node)
       {
-        node->setPos(_graphModel.nodeData(nodeId,
-                                          NodeRole::Position).value<QPointF>());
+        node->setPos(_graphModel.nodeData(nodeId, NodeRole::Position).value<QPointF>());
         node->update();
       }
     }

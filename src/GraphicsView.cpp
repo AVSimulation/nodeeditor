@@ -21,6 +21,10 @@
 #include "BasicGraphicsScene.hpp"
 #include "StyleCollection.hpp"
 
+//#include "DeleteNodeCommand.hpp"
+//#include "DeleteConnectionCommand.hpp"
+
+
 using QtNodes::GraphicsView;
 using QtNodes::BasicGraphicsScene;
 
@@ -42,25 +46,37 @@ GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
   //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 }
 
-
+//-----------------------------------------------------
 GraphicsView::GraphicsView(BasicGraphicsScene *scene, QWidget *parent) : GraphicsView(parent)
 {
   setScene(scene);
 }
 
+//-----------------------------------------------------
+void GraphicsView::undoAction()
+{
+    nodeScene()->getUndoStack()->undo();
+}
 
+//-----------------------------------------------------
+void GraphicsView::redoAction()
+{
+    nodeScene()->getUndoStack()->redo();
+}
+
+//-----------------------------------------------------
 QAction* GraphicsView::clearSelectionAction() const
 {
   return _clearSelectionAction;
 }
 
-
+//-----------------------------------------------------
 QAction* GraphicsView::deleteSelectionAction() const
 {
   return _deleteSelectionAction;
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::setScene(BasicGraphicsScene *scene)
 {
   QGraphicsView::setScene(scene);
@@ -81,7 +97,7 @@ void GraphicsView::setScene(BasicGraphicsScene *scene)
   addAction(_deleteSelectionAction);
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::centerScene()
 {
   if (scene())
@@ -100,7 +116,7 @@ void GraphicsView::centerScene()
   }
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::contextMenuEvent(QContextMenuEvent *event)
 {
   if (itemAt(event->pos()))
@@ -119,7 +135,7 @@ void GraphicsView::contextMenuEvent(QContextMenuEvent *event)
   }
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::wheelEvent(QWheelEvent *event)
 {
   QPoint delta = event->angleDelta();
@@ -138,7 +154,7 @@ void GraphicsView::wheelEvent(QWheelEvent *event)
     scaleDown();
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::scaleUp()
 {
   double const step   = 1.2;
@@ -152,7 +168,7 @@ void GraphicsView::scaleUp()
   scale(factor, factor);
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::scaleDown()
 {
   double const step   = 1.2;
@@ -161,17 +177,19 @@ void GraphicsView::scaleDown()
   scale(factor, factor);
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::deleteSelectedObjects()
 {
   // Delete the selected connections first, ensuring that they won't be
   // automatically deleted when selected nodes are deleted (deleting a
   // node deletes some connections as well)
-  for (QGraphicsItem * item : scene()->selectedItems())
+  for (QGraphicsItem* item : scene()->selectedItems())
   {
-    if (auto c = qgraphicsitem_cast<ConnectionGraphicsObject*>(item))
+    if (auto cnx = qgraphicsitem_cast<ConnectionGraphicsObject*>(item))
     {
-      nodeScene()->graphModel().deleteConnection(c->connectionId());
+      nodeScene()->graphModel().deleteConnection(cnx->connectionId());
+      //QUndoCommand* deleteConnectionCmd = new DeleteConnectionCommand(cnx->connectionId(), nodeScene());
+      //nodeScene()->getUndoStack()->push(deleteConnectionCmd);
     }
   }
 
@@ -180,27 +198,18 @@ void GraphicsView::deleteSelectedObjects()
   // otherwise qgraphicsitem_cast<NodeGraphicsObject*>(item) could be a
   // use-after-free when a selected connection is deleted by deleting
   // the node.
-  for (QGraphicsItem * item : scene()->selectedItems())
+  for (QGraphicsItem* item : scene()->selectedItems())
   {
-    if (auto n = qgraphicsitem_cast<NodeGraphicsObject*>(item))
+    if (auto node = qgraphicsitem_cast<NodeGraphicsObject*>(item))
     {
-      nodeScene()->graphModel().deleteNode(n->nodeId());
+        nodeScene()->graphModel().deleteNode(node->nodeId());
+        //QUndoCommand* deleteNodeCmd = new DeleteNodeCommand(node, nodeScene());
+        //nodeScene()->getUndoStack()->push(deleteNodeCmd);
     }
   }
 }
 
-
-QAction* GraphicsView::undoAction()
-{
-    return nodeScene()->undoAction();
-}
-
-QAction* GraphicsView::redoAction()
-{
-    return nodeScene()->redoAction();
-}
-
-
+//-----------------------------------------------------
 void GraphicsView::keyPressEvent(QKeyEvent *event)
 {
   switch (event->key())
@@ -216,7 +225,7 @@ void GraphicsView::keyPressEvent(QKeyEvent *event)
   QGraphicsView::keyPressEvent(event);
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::keyReleaseEvent(QKeyEvent *event)
 {
   switch (event->key())
@@ -231,7 +240,7 @@ void GraphicsView::keyReleaseEvent(QKeyEvent *event)
   QGraphicsView::keyReleaseEvent(event);
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::mousePressEvent(QMouseEvent *event)
 {
   QGraphicsView::mousePressEvent(event);
@@ -241,7 +250,7 @@ void GraphicsView::mousePressEvent(QMouseEvent *event)
   }
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
   QGraphicsView::mouseMoveEvent(event);
@@ -256,7 +265,7 @@ void GraphicsView::mouseMoveEvent(QMouseEvent *event)
   }
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::drawBackground(QPainter* painter, const QRectF &r)
 {
   QGraphicsView::drawBackground(painter, r);
@@ -304,7 +313,7 @@ void GraphicsView::drawBackground(QPainter* painter, const QRectF &r)
   drawGrid(150);
 }
 
-
+//-----------------------------------------------------
 void GraphicsView::showEvent(QShowEvent *event)
 {
   QGraphicsView::showEvent(event);
@@ -313,7 +322,7 @@ void GraphicsView::showEvent(QShowEvent *event)
   centerScene();
 }
 
-
+//-----------------------------------------------------
 BasicGraphicsScene* GraphicsView::nodeScene()
 {
   return dynamic_cast<BasicGraphicsScene*>(scene());

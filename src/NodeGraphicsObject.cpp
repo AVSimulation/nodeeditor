@@ -15,6 +15,8 @@
 #include "NodePainter.hpp"
 #include "StyleCollection.hpp"
 
+//#include "DeleteConnectionCommand.hpp"
+
 
 namespace QtNodes
 {
@@ -296,17 +298,16 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
           {
             for (auto &cn : connectedNodes)
             {
-              ConnectionId connectionId =
-                std::make_tuple(_nodeId, portIndex, cn.first, cn.second);
+              ConnectionId connectionId = std::make_tuple(_nodeId, portIndex, cn.first, cn.second);
 
               _graphModel.deleteConnection(connectionId);
+              //QUndoCommand* deleteConnectionCmd = new DeleteConnectionCommand(connectionId, nodeScene);
+              //nodeScene->getUndoStack()->push(deleteConnectionCmd);
             }
           }
         } // if port == out
 
-        ConnectionId const incompleteConnectionId =
-          makeIncompleteConnectionId(portToCheck, _nodeId, portIndex);
-
+        ConnectionId const incompleteConnectionId = makeIncompleteConnectionId(portToCheck, _nodeId, portIndex);
         nodeScene->makeDraftConnection(incompleteConnectionId);
       }
     }

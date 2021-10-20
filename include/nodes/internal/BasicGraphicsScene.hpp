@@ -1,9 +1,9 @@
 #pragma once
 
-#include <QtCore/QUuid>
-#include <QtWidgets/QGraphicsScene>
-#include <QtWidgets/QMenu>
+#include <QUuid>
+#include <QMenu>
 #include <QUndoStack>
+#include <QGraphicsScene>
 
 #include <functional>
 #include <memory>
@@ -16,7 +16,6 @@
 #include "Export.hpp"
 
 #include "QUuidStdHash.hpp"
-
 
 namespace QtNodes
 {
@@ -64,9 +63,8 @@ namespace QtNodes
 		/// Deletes all the nodes. Connections are removed automatically.
 		void clearScene();
 
-		// undo & redo
-		QAction* undoAction();
-		QAction* redoAction();
+		// Get undo stack pointeur
+		inline QUndoStack* getUndoStack() {return myUndoStack;}
 
 	public:
 		/// @returns NodeGraphicsObject associated with the given nodeId.
@@ -107,6 +105,7 @@ namespace QtNodes
 		*/
 		void traverseGraphAndPopulateGraphicsObjects();
 
+	public:
 		/// Redraws adjacent nodes for given `connectionId`
 		void updateAttachedNodes(ConnectionId const connectionId, PortType const portType);
 
@@ -129,9 +128,9 @@ namespace QtNodes
 		using UniqueNodeGraphicsObject = std::unique_ptr<NodeGraphicsObject>;
 		using UniqueConnectionGraphicsObject = std::unique_ptr<ConnectionGraphicsObject>;
 		std::unordered_map<NodeId, UniqueNodeGraphicsObject> _nodeGraphicsObjects;
-		std::unordered_map<ConnectionId, UniqueConnectionGraphicsObject> _connectionGraphicsObjects;
-		std::unique_ptr<ConnectionGraphicsObject> _draftConnection;
+		std::unordered_map<ConnectionId, UniqueConnectionGraphicsObject> myConnectionGraphicsObjects;
+		std::unique_ptr<ConnectionGraphicsObject> myDraftConnection;
 
-		QUndoStack myUndoStack;
+		QUndoStack* myUndoStack;
 	};
-}
+};

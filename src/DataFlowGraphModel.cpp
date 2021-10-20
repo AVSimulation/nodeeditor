@@ -441,7 +441,9 @@ deleteNode(NodeId const nodeId)
   auto connectionIds = allConnectionIds(nodeId);
   for (auto &cId : connectionIds)
   {
-    deleteConnection(cId);
+      deleteConnection(cId);
+      //QUndoCommand* deleteConnectionCmd = new DeleteConnectionCommand(cId, this);
+      //nodeScene()->getUndoStack()->push(deleteConnectionCmd);
   }
 
   _nodeGeometryData.erase(nodeId);
