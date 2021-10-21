@@ -22,7 +22,7 @@ option(BUILD_TESTING "Build tests" "${NODES_DEVELOPER_DEFAULTS}")
 option(BUILD_EXAMPLES "Build Examples" "${NODES_DEVELOPER_DEFAULTS}")
 option(BUILD_DOCS "Build Documentation" "${NODES_DEVELOPER_DEFAULTS}")
 option(BUILD_SHARED_LIBS "Build as shared library" ON)
-option(BUILD_DEBUG_POSTFIX_D "Append d suffix to debug libraries" OFF)
+option(BUILD_DEBUG_POSTFIX_D "Append d suffix to debug libraries" ON)
 option(NODES_FORCE_TEST_COLOR "Force colorized unit test output" OFF)
 
 enable_testing()
