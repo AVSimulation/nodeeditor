@@ -63,9 +63,6 @@ namespace QtNodes
 		/// Deletes all the nodes. Connections are removed automatically.
 		void clearScene();
 
-		// Get undo stack pointeur
-		inline QUndoStack* getUndoStack() {return myUndoStack;}
-
 	public:
 		/// @returns NodeGraphicsObject associated with the given nodeId.
 		/**
@@ -87,7 +84,6 @@ namespace QtNodes
 		virtual QMenu* createSceneMenu(QPointF const scenePos);
 
 	Q_SIGNALS:
-		void nodeMoved(NodeId const nodeId, QPointF const & newLocation);
 		void nodeDoubleClicked(NodeId const nodeId);
 		void nodeHovered(NodeId const nodeId, QPoint const screenPos);
 		void nodeHoverLeft(NodeId const nodeId);
@@ -130,7 +126,5 @@ namespace QtNodes
 		std::unordered_map<NodeId, UniqueNodeGraphicsObject> _nodeGraphicsObjects;
 		std::unordered_map<ConnectionId, UniqueConnectionGraphicsObject> myConnectionGraphicsObjects;
 		std::unique_ptr<ConnectionGraphicsObject> myDraftConnection;
-
-		QUndoStack* myUndoStack;
 	};
 };

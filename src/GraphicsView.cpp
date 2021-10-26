@@ -21,12 +21,9 @@
 #include "BasicGraphicsScene.hpp"
 #include "StyleCollection.hpp"
 
-//#include "DeleteNodeCommand.hpp"
-//#include "DeleteConnectionCommand.hpp"
-
-
 using QtNodes::GraphicsView;
 using QtNodes::BasicGraphicsScene;
+
 
 GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
   , _clearSelectionAction(Q_NULLPTR)
@@ -50,18 +47,6 @@ GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
 GraphicsView::GraphicsView(BasicGraphicsScene *scene, QWidget *parent) : GraphicsView(parent)
 {
   setScene(scene);
-}
-
-//-----------------------------------------------------
-void GraphicsView::undoAction()
-{
-    nodeScene()->getUndoStack()->undo();
-}
-
-//-----------------------------------------------------
-void GraphicsView::redoAction()
-{
-    nodeScene()->getUndoStack()->redo();
 }
 
 //-----------------------------------------------------
@@ -187,9 +172,10 @@ void GraphicsView::deleteSelectedObjects()
   {
     if (auto cnx = qgraphicsitem_cast<ConnectionGraphicsObject*>(item))
     {
-      nodeScene()->graphModel().deleteConnection(cnx->connectionId());
-      //QUndoCommand* deleteConnectionCmd = new DeleteConnectionCommand(cnx->connectionId(), nodeScene());
-      //nodeScene()->getUndoStack()->push(deleteConnectionCmd);
+      //nodeScene()->graphModel().deleteConnection(cnx->connectionId());
+
+      // emit a signal for "AVS.BuildingBlocksManager" to delete connection
+      Q_EMIT requestDeleteConnection(cnx->connectionId());
     }
   }
 
@@ -202,9 +188,10 @@ void GraphicsView::deleteSelectedObjects()
   {
     if (auto node = qgraphicsitem_cast<NodeGraphicsObject*>(item))
     {
-        nodeScene()->graphModel().deleteNode(node->nodeId());
-        //QUndoCommand* deleteNodeCmd = new DeleteNodeCommand(node, nodeScene());
-        //nodeScene()->getUndoStack()->push(deleteNodeCmd);
+        //nodeScene()->graphModel().deleteNode(node->nodeId());
+
+        // emit a signal for AVS lib "AVS.BuildingBlocksManager"
+        Q_EMIT requestDeleteNode(*node);
     }
   }
 }

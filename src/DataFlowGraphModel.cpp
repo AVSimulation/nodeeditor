@@ -114,7 +114,6 @@ addNode(QString const nodeType)
     _models[newId] = std::move(model);
 
     Q_EMIT nodeCreated(newId);
-
     return newId;
   }
 
@@ -442,8 +441,6 @@ deleteNode(NodeId const nodeId)
   for (auto &cId : connectionIds)
   {
       deleteConnection(cId);
-      //QUndoCommand* deleteConnectionCmd = new DeleteConnectionCommand(cId, this);
-      //nodeScene()->getUndoStack()->push(deleteConnectionCmd);
   }
 
   _nodeGeometryData.erase(nodeId);

@@ -32,8 +32,7 @@ namespace QtNodes
     //------------------------------------------------------------------------------------------
     BasicGraphicsScene::BasicGraphicsScene(AbstractGraphModel &graphModel, QObject* parent) :
         QGraphicsScene(parent),
-        _graphModel(graphModel),
-        myUndoStack(new QUndoStack(this))
+        _graphModel(graphModel)
     {
 
       connect(&_graphModel, &AbstractGraphModel::connectionCreated,
@@ -245,6 +244,7 @@ namespace QtNodes
       {
         node->setPos(_graphModel.nodeData(nodeId, NodeRole::Position).value<QPointF>());
         node->update();
+        node->moveConnections();
       }
     }
 

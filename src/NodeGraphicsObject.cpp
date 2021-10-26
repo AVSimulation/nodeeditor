@@ -15,8 +15,6 @@
 #include "NodePainter.hpp"
 #include "StyleCollection.hpp"
 
-//#include "DeleteConnectionCommand.hpp"
-
 
 namespace QtNodes
 {
@@ -293,16 +291,12 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
                                  portIndex,
                                  PortRole::ConnectionPolicyRole).value<ConnectionPolicy>();
 
-          if (!connectedNodes.empty() &&
-              outPolicy == ConnectionPolicy::One)
+          if (!connectedNodes.empty() && outPolicy == ConnectionPolicy::One)
           {
             for (auto &cn : connectedNodes)
             {
               ConnectionId connectionId = std::make_tuple(_nodeId, portIndex, cn.first, cn.second);
-
               _graphModel.deleteConnection(connectionId);
-              //QUndoCommand* deleteConnectionCmd = new DeleteConnectionCommand(connectionId, nodeScene);
-              //nodeScene->getUndoStack()->push(deleteConnectionCmd);
             }
           }
         } // if port == out
@@ -384,6 +378,9 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
   QGraphicsObject::mouseReleaseEvent(event);
 
+  // Send a signal to GraphModel to tel "Update_Node_Position"
+  _graphModel.updateNodePosition(_nodeId, event->scenePos());
+
   // position connections precisely after fast node move
   moveConnections();
 }
@@ -426,9 +423,9 @@ hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 
   update();
 
-  // Signal
+  // Signal HoverLeft to the scene()
   nodeScene()->nodeHoverLeft(_nodeId);
-
+  
   event->accept();
 }
 

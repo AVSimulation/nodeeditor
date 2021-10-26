@@ -1,13 +1,14 @@
 #pragma once
 
 #include <QtWidgets/QGraphicsView>
+#include "Definitions.hpp"
 #include "Export.hpp"
 
 
 namespace QtNodes
 {
-
 	class BasicGraphicsScene;
+	class NodeGraphicsObject;
 
 	class NODE_EDITOR_PUBLIC GraphicsView : public QGraphicsView
 	{
@@ -24,14 +25,14 @@ namespace QtNodes
 		void setScene(BasicGraphicsScene *scene);
 		void centerScene();
 
-		// Call undo & redo depuis l'applicatif
-		void undoAction();
-		void redoAction();
-
 	public Q_SLOTS:
 		void scaleUp();
 		void scaleDown();
 		void deleteSelectedObjects();
+
+	Q_SIGNALS:
+		void requestDeleteConnection(const ConnectionId& cnxId);
+		void requestDeleteNode(const NodeGraphicsObject& node);
 
 	protected:
 		void contextMenuEvent(QContextMenuEvent *event) override;

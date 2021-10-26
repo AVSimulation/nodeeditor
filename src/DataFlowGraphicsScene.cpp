@@ -26,8 +26,6 @@
 #include "NodeGeometry.hpp"
 #include "NodeGraphicsObject.hpp"
 
-//#include "CreateNodeCommand.hpp"
-
 namespace QtNodes
 {
 
@@ -140,9 +138,6 @@ createSceneMenu(QPointF const scenePos)
             NodeId nodeId = this->_graphModel.addNode(modelName);
             if (nodeId != InvalidNodeId)
               _graphModel.setNodeData(nodeId, NodeRole::Position, scenePos);
-
-            //QUndoCommand* createNodeCmd = new CreateNodeCommand(modelName, scenePos, this);
-            //this->getUndoStack()->push(createNodeCmd);
 
             modelMenu->close();
           });

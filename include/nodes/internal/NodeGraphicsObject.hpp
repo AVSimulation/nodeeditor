@@ -5,6 +5,7 @@
 
 #include "NodeState.hpp"
 
+
 class QGraphicsProxyWidget;
 
 namespace QtNodes

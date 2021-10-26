@@ -163,6 +163,12 @@ public:
 Q_SIGNALS:
 
   void
+  requestCreateConnection(ConnectionId const connectionId);
+
+  void
+  updateNodePosition(NodeId const nodeId, QPointF const nodePosition);
+
+  void
   connectionCreated(ConnectionId const connectionId);
 
   void

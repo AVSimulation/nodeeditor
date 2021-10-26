@@ -10,9 +10,9 @@
 #include "NodeGraphicsObject.hpp"
 #include "BasicGraphicsScene.hpp"
 
+#include "AbstractGraphModel.hpp"
+
 #include "BasicGraphicsScene.hpp"
-//#include "CreateConnectionCommand.hpp"
-//#include "DeleteConnectionCommand.hpp"
 
 
 
@@ -89,28 +89,21 @@ tryConnect() const
   }
 
   // 2. Create new connection.
-
   ConnectionId incompleteConnectionId = _cgo.connectionId();
-
-  ConnectionId newConnectionId =
-    makeCompleteConnectionId(incompleteConnectionId,
-                             _ngo.nodeId(),
-                             targetPortIndex);
-
+  ConnectionId newConnectionId = makeCompleteConnectionId(incompleteConnectionId, _ngo.nodeId(), targetPortIndex);
   //_ngo.nodeScene()->resetDraftConnection();
 
   // 3. Adjust Connection geometry.
-
   //_ngo.moveConnections();
   //_ngo.nodeState().resetReactionToConnection();
 
   //---------
   AbstractGraphModel & model = _ngo.nodeScene()->graphModel();
-  model.addConnection(newConnectionId);
+  //model.addConnection(newConnectionId);
+  
+  // emit a signal for "AVS.BuildingBlocksManager" to create connection
+  Q_EMIT model.requestCreateConnection(newConnectionId);
   //---------
-
-  //QUndoCommand* createConnectionCmd = new CreateConnectionCommand(newConnectionId, &_scene);
-  //_scene.getUndoStack()->push(createConnectionCmd);
 
   return true;
 }
@@ -123,8 +116,7 @@ disconnect(PortType portToDisconnect) const
   ConnectionId connectionId = _cgo.connectionId();
 
   _scene.graphModel().deleteConnection(connectionId);
-  //QUndoCommand* deleteConnectionCmd = new DeleteConnectionCommand(connectionId, &_scene);
-  //_scene.getUndoStack()->push(deleteConnectionCmd);
+
 
   NodeGeometry nodeGeometry(_ngo);
 
