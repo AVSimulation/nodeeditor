@@ -4,11 +4,16 @@
 #include "Definitions.hpp"
 #include "Export.hpp"
 
+#include "ConnectionGraphicsObject.hpp"
+#include "NodeGraphicsObject.hpp"
+#include "BasicGraphicsScene.hpp"
+#include "StyleCollection.hpp"
+
 
 namespace QtNodes
 {
 	class BasicGraphicsScene;
-	class NodeGraphicsObject;
+
 
 	class NODE_EDITOR_PUBLIC GraphicsView : public QGraphicsView
 	{
@@ -31,8 +36,9 @@ namespace QtNodes
 		void deleteSelectedObjects();
 
 	Q_SIGNALS:
-		void requestDeleteConnection(const ConnectionId& cnxId);
-		void requestDeleteNode(const NodeGraphicsObject& node);
+		void requestDeleteConnections(const std::vector<ConnectionId>& cnxList);
+		void requestDeleteNodes(const std::vector<NodeGraphicsObject*>& nodeList);
+		void requestDeleteObjects(const std::vector<ConnectionId>& cnxList, const std::vector<NodeGraphicsObject*>& nodeList);
 
 	protected:
 		void contextMenuEvent(QContextMenuEvent *event) override;

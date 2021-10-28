@@ -16,11 +16,6 @@
 #include <iostream>
 #include <cmath>
 
-#include "ConnectionGraphicsObject.hpp"
-#include "NodeGraphicsObject.hpp"
-#include "BasicGraphicsScene.hpp"
-#include "StyleCollection.hpp"
-
 using QtNodes::GraphicsView;
 using QtNodes::BasicGraphicsScene;
 
@@ -168,12 +163,12 @@ void GraphicsView::deleteSelectedObjects()
   // Delete the selected connections first, ensuring that they won't be
   // automatically deleted when selected nodes are deleted (deleting a
   // node deletes some connections as well)
+  std::vector<ConnectionId> connectionsSelected;
   for (QGraphicsItem* item : scene()->selectedItems())
   {
     if (auto cnx = qgraphicsitem_cast<ConnectionGraphicsObject*>(item))
     {
-      // emit a signal for App to delete connection
-      Q_EMIT requestDeleteConnection(cnx->connectionId());
+        connectionsSelected.push_back(cnx->connectionId());
     }
   }
 
@@ -182,14 +177,26 @@ void GraphicsView::deleteSelectedObjects()
   // otherwise qgraphicsitem_cast<NodeGraphicsObject*>(item) could be a
   // use-after-free when a selected connection is deleted by deleting
   // the node.
+  std::vector<NodeGraphicsObject*> nodesSelected;
   for (QGraphicsItem* item : scene()->selectedItems())
   {
     if (auto node = qgraphicsitem_cast<NodeGraphicsObject*>(item))
     {
-        // emit a signal for App to delete node
-        Q_EMIT requestDeleteNode(*node);
+        nodesSelected.push_back(node);
     }
   }
+
+  // emit a signal for App to delete connection selected list
+  if ((connectionsSelected.size() > 0) && (nodesSelected.size() > 0))
+      Q_EMIT requestDeleteObjects(connectionsSelected, nodesSelected);
+  
+  // emit a signal for App to delete connection selected list
+  else if (connectionsSelected.size() > 0)
+      Q_EMIT requestDeleteConnections(connectionsSelected);
+
+  // emit a signal for App to delete node selected list
+  else if (nodesSelected.size() > 0)
+      Q_EMIT requestDeleteNodes(nodesSelected);
 }
 
 //-----------------------------------------------------

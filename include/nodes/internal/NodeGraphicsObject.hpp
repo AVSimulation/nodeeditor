@@ -5,6 +5,8 @@
 
 #include "NodeState.hpp"
 
+#include <QPointF>
+
 
 class QGraphicsProxyWidget;
 
@@ -14,7 +16,7 @@ namespace QtNodes
 class BasicGraphicsScene;
 class AbstractGraphModel;
 
-class NodeGraphicsObject : public QGraphicsObject
+class NODE_EDITOR_PUBLIC NodeGraphicsObject : public QGraphicsObject
 {
   Q_OBJECT
 public:
@@ -111,6 +113,8 @@ private:
   AbstractGraphModel &_graphModel;
 
   NodeState _nodeState;
+
+  QPointF myLastClic;
 
   // either nullptr or owned by parent QGraphicsItem
   QGraphicsProxyWidget * _proxyWidget;
