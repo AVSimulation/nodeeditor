@@ -172,9 +172,7 @@ void GraphicsView::deleteSelectedObjects()
   {
     if (auto cnx = qgraphicsitem_cast<ConnectionGraphicsObject*>(item))
     {
-      //nodeScene()->graphModel().deleteConnection(cnx->connectionId());
-
-      // emit a signal for "AVS.BuildingBlocksManager" to delete connection
+      // emit a signal for App to delete connection
       Q_EMIT requestDeleteConnection(cnx->connectionId());
     }
   }
@@ -188,9 +186,7 @@ void GraphicsView::deleteSelectedObjects()
   {
     if (auto node = qgraphicsitem_cast<NodeGraphicsObject*>(item))
     {
-        //nodeScene()->graphModel().deleteNode(node->nodeId());
-
-        // emit a signal for AVS lib "AVS.BuildingBlocksManager"
+        // emit a signal for App to delete node
         Q_EMIT requestDeleteNode(*node);
     }
   }

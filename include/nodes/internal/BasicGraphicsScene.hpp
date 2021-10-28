@@ -101,7 +101,6 @@ namespace QtNodes
 		*/
 		void traverseGraphAndPopulateGraphicsObjects();
 
-	public:
 		/// Redraws adjacent nodes for given `connectionId`
 		void updateAttachedNodes(ConnectionId const connectionId, PortType const portType);
 

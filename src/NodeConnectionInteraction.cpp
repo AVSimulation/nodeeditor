@@ -81,7 +81,6 @@ NodeConnectionInteraction::
 tryConnect() const
 {
   // 1. Check conditions from 'canConnect'.
-
   PortIndex targetPortIndex = InvalidPortIndex;
   if (!canConnect(&targetPortIndex))
   {
@@ -91,19 +90,10 @@ tryConnect() const
   // 2. Create new connection.
   ConnectionId incompleteConnectionId = _cgo.connectionId();
   ConnectionId newConnectionId = makeCompleteConnectionId(incompleteConnectionId, _ngo.nodeId(), targetPortIndex);
-  //_ngo.nodeScene()->resetDraftConnection();
 
   // 3. Adjust Connection geometry.
-  //_ngo.moveConnections();
-  //_ngo.nodeState().resetReactionToConnection();
-
-  //---------
   AbstractGraphModel & model = _ngo.nodeScene()->graphModel();
-  //model.addConnection(newConnectionId);
-  
-  // emit a signal for "AVS.BuildingBlocksManager" to create connection
-  Q_EMIT model.requestCreateConnection(newConnectionId);
-  //---------
+  Q_EMIT model.requestCreateConnection(newConnectionId); // emit a signal for App to create connection
 
   return true;
 }
