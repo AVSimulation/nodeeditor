@@ -372,7 +372,8 @@ DataFlowGraphModel::
 setPortData(NodeId    nodeId,
             PortType  portType,
             PortIndex portIndex,
-            PortRole  role) const
+            PortRole  role,
+            QVariant value)
 {
   Q_UNUSED(nodeId);
   Q_UNUSED(portType);

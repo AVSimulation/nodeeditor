@@ -41,7 +41,7 @@ public:
   NodeFlags nodeFlags(NodeId nodeId) const override;
   bool setNodeData(NodeId nodeId, NodeRole role, QVariant value) override;
   QVariant portData(NodeId nodeId, PortType  portType, PortIndex portIndex, PortRole  role) const override;
-  bool setPortData(NodeId nodeId, PortType  portType, PortIndex portIndex, PortRole  role) const override;
+  bool setPortData(NodeId nodeId, PortType  portType, PortIndex portIndex, PortRole  role, QVariant value) override;
   bool deleteConnection(ConnectionId const connectionId) override;
   bool deleteNode(NodeId const nodeId) override;
 
