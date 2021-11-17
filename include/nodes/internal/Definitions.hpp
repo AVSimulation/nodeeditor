@@ -22,7 +22,7 @@ NODE_EDITOR_PUBLIC Q_NAMESPACE
 enum class NodeRole
 {
   Type             = 0, ///< Type of the current node, usually a string.
-  Position         = 1, ///< `QPointF` positon of the nod on the scene.
+  Position         = 1, ///< `QPointF` positon of the node on the scene.
   Size             = 2, ///< `QSize` for resizable nodes.
   CaptionVisible   = 3, ///< `bool` for caption visibility.
   Caption          = 4, ///< `QString` for node caption.
@@ -30,6 +30,7 @@ enum class NodeRole
   NumberOfInPorts  = 6, ///< `unsigned int`
   NumberOfOutPorts = 7, ///< `unsigned int`
   Widget           = 8, ///< Optional `QWidget*` or `nullptr`
+  Parameters       = 9, ///< `QString` parameters of the node on the scene.
 };
 Q_ENUM_NS(NodeRole)
 
