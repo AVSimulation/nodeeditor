@@ -186,7 +186,7 @@ void GraphicsView::deleteSelectedObjects()
     }
   }
 
-  // emit a signal for App to delete connection selected list
+  // emit a signal for App to delete objects (nodes / connections) selected list
   if ((connectionsSelected.size() > 0) && (nodesSelected.size() > 0))
       Q_EMIT requestDeleteObjects(connectionsSelected, nodesSelected);
   
