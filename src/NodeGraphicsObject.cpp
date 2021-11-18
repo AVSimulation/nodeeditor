@@ -316,8 +316,8 @@ mousePressEvent(QGraphicsSceneMouseEvent * event)
     _nodeState.setResizing(hit);
   }
 
-  // ---
-  myLastClic = event->pos();
+  // node click last position
+  myLastClic = event->lastPos();
 }
 
 
@@ -381,12 +381,18 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
   QGraphicsObject::mouseReleaseEvent(event);
 
-  // Send a signal to GraphModel to tel App the UpdateNodePosition
-  const auto toto = _graphModel.nodeData(_nodeId, NodeRole::Size).toSize();
-  _graphModel.updateNodePosition(_nodeId, event->scenePos() - myLastClic);
+  // Send a signal to GraphModel to tel App the node change position
+  QPointF clickPosition = event->lastScenePos() - myLastClic;
+  QPointF oldNodePosition = _graphModel.nodeData(_nodeId, QtNodes::NodeRole::Position).toPointF();
 
-  // position connections precisely after fast node move
-  moveConnections();
+  if (clickPosition != oldNodePosition)
+  {
+      // update node positioon if changed
+      _graphModel.updateNodePosition(_nodeId, clickPosition);
+
+      // position connections precisely after fast node move
+      moveConnections();
+  }
 }
 
 
