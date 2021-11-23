@@ -31,6 +31,8 @@ paint(QPainter * painter,
 
   drawFilledConnectionPoints(painter, ngo);
 
+  drawNodeCaptionBackground(painter, ngo);
+
   drawNodeCaption(painter, ngo);
 
   drawEntryLabels(painter, ngo);
@@ -127,7 +129,7 @@ drawConnectionPoints(QPainter * painter,
         model.portData(nodeId,
                        portType,
                        portIndex,
-                       PortRole::DataType).value<NodeDataType>();
+                       PortRole::Caption).toString();
 
       double r = 1.0;
 
@@ -171,13 +173,25 @@ drawConnectionPoints(QPainter * painter,
         }
       }
 
+      QJsonDocument json =
+        QJsonDocument::fromVariant(model.nodeData(nodeId, NodeRole::Style));
+      NodeStyle nodeStyle(json);
+      const auto portDataType = model.portData(nodeId, portType, portIndex, PortRole::DataType).toString();
+      const auto it = nodeStyle.ConnectionPointColorMap.find(portDataType);
+      auto color = nodeStyle.ConnectionPointColor;
+      if (it != nodeStyle.ConnectionPointColorMap.end())
+        painter->setPen(*it);
+      else
+        painter->setPen(color);
+      painter->setBrush(color);
+
       if (connectionStyle.useDataDefinedColors())
       {
-        painter->setBrush(connectionStyle.normalColor(dataType.id));
+        painter->setBrush(connectionStyle.normalColor(dataType));
       }
       else
       {
-        painter->setBrush(nodeStyle.ConnectionPointColor);
+        painter->setBrush(color);
       }
 
       painter->drawEllipse(p,
@@ -229,27 +243,84 @@ drawFilledConnectionPoints(QPainter * painter,
           model.portData(nodeId,
                          portType,
                          portIndex,
-                         PortRole::DataType).value<NodeDataType>();
+                         PortRole::DataType).toString();
 
         auto const &connectionStyle = StyleCollection::connectionStyle();
         if (connectionStyle.useDataDefinedColors())
         {
-          QColor const c = connectionStyle.normalColor(dataType.id);
+          QColor const c = connectionStyle.normalColor(dataType);
           painter->setPen(c);
           painter->setBrush(c);
         }
         else
         {
-          painter->setPen(nodeStyle.FilledConnectionPointColor);
-          painter->setBrush(nodeStyle.FilledConnectionPointColor);
+          QColor color = nodeStyle.FilledConnectionPointColor;
+          const auto& portData = model.portData(nodeId, portType, portIndex, PortRole::DataType).toString();
+          const auto it = nodeStyle.ConnectionPointColorMap.find(portData);
+          if (it != nodeStyle.ConnectionPointColorMap.end())
+              color = *it;
+          painter->setPen(color);
+          painter->setBrush(color);
         }
-
         painter->drawEllipse(p,
                              diameter * 0.4,
                              diameter * 0.4);
       }
+
     }
   }
+}
+
+
+void
+NodePainter::
+drawNodeCaptionBackground(QPainter* painter,
+    NodeGraphicsObject& ngo)
+{
+  AbstractGraphModel const& model = ngo.graphModel();
+
+  NodeId const nodeId = ngo.nodeId();
+
+  NodeGeometry geom(ngo);
+  QSize size = geom.size();
+
+  QJsonDocument json =
+    QJsonDocument::fromVariant(model.nodeData(nodeId, NodeRole::Style));
+
+  NodeStyle nodeStyle(json);
+
+  auto color = ngo.isSelected() ?
+    nodeStyle.SelectedBoundaryColor :
+    nodeStyle.NormalBoundaryColor;
+
+  if (ngo.nodeState().hovered())
+  {
+    QPen p(color, nodeStyle.HoveredPenWidth);
+    painter->setPen(p);
+  }
+  else
+  {
+    QPen p(color, nodeStyle.PenWidth);
+    painter->setPen(p);
+  }
+
+  const auto height = (geom.verticalSpacing() + geom.entryHeight()) / 3.0 + geom.entryHeight();
+
+  QLinearGradient gradient(QPointF(0.0, 0.0), QPointF(2.0, height));
+
+  gradient.setColorAt(0.0, nodeStyle.TitleGradientColor0);
+  gradient.setColorAt(1.0, nodeStyle.TitleGradientColor1);
+  painter->setBrush(gradient);
+
+  float diam = nodeStyle.ConnectionPointDiameter;
+
+  QRectF boundary(-diam, -diam,
+                  2.0 * diam + size.width(),
+                  height);
+
+  double const radius = 3.0;
+
+  painter->drawRoundedRect(boundary, radius, radius);
 }
 
 

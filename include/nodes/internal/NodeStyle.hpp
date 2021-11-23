@@ -34,6 +34,8 @@ public:
 
   QColor NormalBoundaryColor;
   QColor SelectedBoundaryColor;
+  QColor TitleGradientColor0;
+  QColor TitleGradientColor1;
   QColor GradientColor0;
   QColor GradientColor1;
   QColor GradientColor2;
@@ -41,10 +43,9 @@ public:
   QColor ShadowColor;
   QColor FontColor;
   QColor FontColorFaded;
-
   QColor ConnectionPointColor;
+  QMap<QString, QColor> ConnectionPointColorMap;
   QColor FilledConnectionPointColor;
-
   QColor WarningColor;
   QColor ErrorColor;
 
