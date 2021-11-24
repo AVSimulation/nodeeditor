@@ -167,6 +167,9 @@ Q_SIGNALS:
   requestCreateConnection(ConnectionId const connectionId);
 
   void
+  requestDeleteConnections(std::vector<ConnectionId> const &connectionId);
+
+  void
   updateNodePosition(NodeId const nodeId, QPointF const nodePosition);
 
   void
