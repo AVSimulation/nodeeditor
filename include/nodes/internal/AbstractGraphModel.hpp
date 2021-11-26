@@ -184,6 +184,11 @@ Q_SIGNALS:
   void
   nodePositonUpdated(NodeId const nodeId);
 
+  /**
+  * Signal emitted when the data of a node was changed
+  */
+  void nodeDataChanged(NodeId const nodeId);
+
   void
   portDataSet(NodeId const    nodeId,
               PortType const  portType,

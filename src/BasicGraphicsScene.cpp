@@ -50,6 +50,9 @@ namespace QtNodes
       connect(&_graphModel, &AbstractGraphModel::nodePositonUpdated,
               this, &BasicGraphicsScene::onNodePositionUpdated);
 
+      connect(&_graphModel, &AbstractGraphModel::nodeDataChanged,
+          this, &BasicGraphicsScene::onNodeDataChanged);
+
       connect(&_graphModel, &AbstractGraphModel::portsAboutToBeDeleted,
               this, &BasicGraphicsScene::onPortsAboutToBeDeleted);
 
@@ -246,6 +249,16 @@ namespace QtNodes
         node->update();
         node->moveConnections();
       }
+    }
+
+    //------------------------------------------------------------------------------------------
+    void BasicGraphicsScene::onNodeDataChanged(NodeId const nodeId)
+    {
+        auto node = nodeGraphicsObject(nodeId);
+        if (!node)
+            return;
+            
+        node->update();
     }
 
     //------------------------------------------------------------------------------------------

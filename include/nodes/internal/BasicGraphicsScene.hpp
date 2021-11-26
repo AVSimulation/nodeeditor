@@ -112,6 +112,7 @@ namespace QtNodes
 		void onNodeDeleted(NodeId const nodeId);
 		void onNodeCreated(NodeId const nodeId);
 		void onNodePositionUpdated(NodeId const nodeId);
+		void onNodeDataChanged(NodeId const nodeId);
 		void onPortsAboutToBeDeleted(NodeId const nodeId, PortType const portType, std::unordered_set<PortIndex> const &portIndexSet);
 		void onPortsDeleted(NodeId const nodeId, PortType const portType, std::unordered_set<PortIndex> const &portIndexSet);
 		void onPortsAboutToBeInserted(NodeId const nodeId, PortType const portType, std::unordered_set<PortIndex> const &portIndexSet);
