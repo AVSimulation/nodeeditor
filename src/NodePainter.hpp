@@ -38,6 +38,10 @@ public:
                                   NodeGraphicsObject  & ngo);
 
   static
+      void drawNodeCaptionBackground(QPainter* painter,
+                                     NodeGraphicsObject& ngo);
+
+  static
   void drawNodeCaption(QPainter * painter,
                        NodeGraphicsObject  & ngo);
 

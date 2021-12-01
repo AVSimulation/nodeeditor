@@ -167,6 +167,9 @@ Q_SIGNALS:
   requestCreateConnection(ConnectionId const connectionId);
 
   void
+  requestDeleteConnections(std::vector<ConnectionId> const &connectionId);
+
+  void
   updateNodePosition(NodeId const nodeId, QPointF const nodePosition);
 
   void
@@ -183,6 +186,13 @@ Q_SIGNALS:
 
   void
   nodePositonUpdated(NodeId const nodeId);
+
+  /**
+  * \brief  Signal emitted when the data of a node was changed
+  * \param  nodeId  The id of the node that changed
+  * \param  role    The role of the data that changed
+  */
+  void nodeDataChanged(NodeId const nodeId, NodeRole const role);
 
   void
   portDataSet(NodeId const    nodeId,

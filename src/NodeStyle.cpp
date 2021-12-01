@@ -76,9 +76,38 @@ setNodeStyle(QString jsonText)
     } \
 }
 
+#define NODE_STYLE_READ_COLOR_MAP(values, variable)  { \
+    auto valueRef = values[#variable]; \
+    NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable) \
+    variable.clear(); \
+    auto mapItems = valueRef.toString().split(";"); \
+    for(auto item: mapItems) \
+    { \
+        auto keyValue = item.split("/"); \
+        if(keyValue.size() != 2) \
+            continue; \
+        auto name = keyValue[0]; \
+        QColor color(keyValue[1]); \
+        variable.insert(name, color); \
+    } \
+}
 
 #define NODE_STYLE_WRITE_COLOR(values, variable)  { \
     values[#variable] = variable.name(); \
+}
+
+#define NODE_STYLE_WRITE_COLOR_MAP(values, variable)  { \
+    QString mapStr = ""; \
+    QMapIterator<QString, QColor> it(variable); \
+    while (it.hasNext()) \
+    { \
+        it.next(); \
+        mapStr += it.key(); \
+        mapStr += "/"; \
+        mapStr += it.value().name(); \
+        mapStr += ";"; \
+    } \
+    values[#variable] = mapStr; \
 }
 
 #define NODE_STYLE_READ_FLOAT(values, variable)  { \
@@ -104,6 +133,8 @@ loadJson(QJsonDocument const & json)
 
   NODE_STYLE_READ_COLOR(obj, NormalBoundaryColor);
   NODE_STYLE_READ_COLOR(obj, SelectedBoundaryColor);
+  NODE_STYLE_READ_COLOR(obj, TitleGradientColor0);
+  NODE_STYLE_READ_COLOR(obj, TitleGradientColor1);
   NODE_STYLE_READ_COLOR(obj, GradientColor0);
   NODE_STYLE_READ_COLOR(obj, GradientColor1);
   NODE_STYLE_READ_COLOR(obj, GradientColor2);
@@ -112,6 +143,7 @@ loadJson(QJsonDocument const & json)
   NODE_STYLE_READ_COLOR(obj, FontColor);
   NODE_STYLE_READ_COLOR(obj, FontColorFaded);
   NODE_STYLE_READ_COLOR(obj, ConnectionPointColor);
+  NODE_STYLE_READ_COLOR_MAP(obj, ConnectionPointColorMap);
   NODE_STYLE_READ_COLOR(obj, FilledConnectionPointColor);
   NODE_STYLE_READ_COLOR(obj, WarningColor);
   NODE_STYLE_READ_COLOR(obj, ErrorColor);
@@ -132,6 +164,8 @@ toJson() const
 
   NODE_STYLE_WRITE_COLOR(obj, NormalBoundaryColor);
   NODE_STYLE_WRITE_COLOR(obj, SelectedBoundaryColor);
+  NODE_STYLE_WRITE_COLOR(obj, TitleGradientColor0);
+  NODE_STYLE_WRITE_COLOR(obj, TitleGradientColor1);
   NODE_STYLE_WRITE_COLOR(obj, GradientColor0);
   NODE_STYLE_WRITE_COLOR(obj, GradientColor1);
   NODE_STYLE_WRITE_COLOR(obj, GradientColor2);
@@ -140,6 +174,7 @@ toJson() const
   NODE_STYLE_WRITE_COLOR(obj, FontColor);
   NODE_STYLE_WRITE_COLOR(obj, FontColorFaded);
   NODE_STYLE_WRITE_COLOR(obj, ConnectionPointColor);
+  NODE_STYLE_WRITE_COLOR_MAP(obj, ConnectionPointColorMap);
   NODE_STYLE_WRITE_COLOR(obj, FilledConnectionPointColor);
   NODE_STYLE_WRITE_COLOR(obj, WarningColor);
   NODE_STYLE_WRITE_COLOR(obj, ErrorColor);

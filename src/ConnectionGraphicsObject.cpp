@@ -1,4 +1,5 @@
 #include "ConnectionGraphicsObject.hpp"
+#include "GraphicsView.hpp"
 
 #include <QtWidgets/QGraphicsSceneMouseEvent>
 #include <QtWidgets/QGraphicsDropShadowEffect>
@@ -320,6 +321,11 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
     // Resulting unique_ptr is not used and automatically deleted.
     nodeScene()->resetDraftConnection();
   }
+
+  // The old connection must be deleted. If it was moved to another port, a new connection has been added.
+  std::vector<ConnectionId> vec;
+  vec.push_back(connectionId());
+  Q_EMIT(graphModel().requestDeleteConnections(vec));
 }
 
 

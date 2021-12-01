@@ -1,5 +1,7 @@
 #include "BasicGraphicsScene.hpp"
 
+#include "NodeGeometry.hpp"
+
 #include <queue>
 #include <iostream>
 #include <stdexcept>
@@ -49,6 +51,9 @@ namespace QtNodes
 
       connect(&_graphModel, &AbstractGraphModel::nodePositonUpdated,
               this, &BasicGraphicsScene::onNodePositionUpdated);
+
+      connect(&_graphModel, &AbstractGraphModel::nodeDataChanged,
+          this, &BasicGraphicsScene::onNodeDataChanged);
 
       connect(&_graphModel, &AbstractGraphModel::portsAboutToBeDeleted,
               this, &BasicGraphicsScene::onPortsAboutToBeDeleted);
@@ -246,6 +251,26 @@ namespace QtNodes
         node->update();
         node->moveConnections();
       }
+    }
+
+    //------------------------------------------------------------------------------------------
+    void BasicGraphicsScene::onNodeDataChanged(NodeId const nodeId, NodeRole const role)
+    {
+        auto node = nodeGraphicsObject(nodeId);
+        if (!node)
+            return;
+            
+        //Compute the geometry
+        if (role != NodeRole::Size)
+        {
+            node->setGeometryChanged();
+
+            NodeGeometry geometry(*node);
+            geometry.recalculateSize();
+        }       
+
+        node->update();
+        node->moveConnections();
     }
 
     //------------------------------------------------------------------------------------------
