@@ -112,7 +112,14 @@ namespace QtNodes
 		void onNodeDeleted(NodeId const nodeId);
 		void onNodeCreated(NodeId const nodeId);
 		void onNodePositionUpdated(NodeId const nodeId);
-		void onNodeDataChanged(NodeId const nodeId);
+
+		/**
+		 * \brief	Slot called when the data of a node was changed
+		 *			Updates the node and its geometry if need be
+		 * \param	nodeId  The id of the node that changed
+		 * \param	role    The role of the data that changed
+		 */
+		void onNodeDataChanged(NodeId const nodeId, NodeRole const role);
 		void onPortsAboutToBeDeleted(NodeId const nodeId, PortType const portType, std::unordered_set<PortIndex> const &portIndexSet);
 		void onPortsDeleted(NodeId const nodeId, PortType const portType, std::unordered_set<PortIndex> const &portIndexSet);
 		void onPortsAboutToBeInserted(NodeId const nodeId, PortType const portType, std::unordered_set<PortIndex> const &portIndexSet);

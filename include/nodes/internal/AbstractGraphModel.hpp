@@ -188,9 +188,11 @@ Q_SIGNALS:
   nodePositonUpdated(NodeId const nodeId);
 
   /**
-  * Signal emitted when the data of a node was changed
+  * \brief  Signal emitted when the data of a node was changed
+  * \param  nodeId  The id of the node that changed
+  * \param  role    The role of the data that changed
   */
-  void nodeDataChanged(NodeId const nodeId);
+  void nodeDataChanged(NodeId const nodeId, NodeRole const role);
 
   void
   portDataSet(NodeId const    nodeId,

@@ -1,5 +1,7 @@
 #include "BasicGraphicsScene.hpp"
 
+#include "NodeGeometry.hpp"
+
 #include <queue>
 #include <iostream>
 #include <stdexcept>
@@ -252,12 +254,21 @@ namespace QtNodes
     }
 
     //------------------------------------------------------------------------------------------
-    void BasicGraphicsScene::onNodeDataChanged(NodeId const nodeId)
+    void BasicGraphicsScene::onNodeDataChanged(NodeId const nodeId, NodeRole const role)
     {
         auto node = nodeGraphicsObject(nodeId);
         if (!node)
             return;
             
+        //Compute the geometry
+        if (role != NodeRole::Size)
+        {
+            node->setGeometryChanged();
+
+            NodeGeometry geometry(*node);
+            geometry.recalculateSize();
+        }       
+
         node->update();
         node->moveConnections();
     }
