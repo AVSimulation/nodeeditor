@@ -209,7 +209,7 @@ drawNormalLine(QPainter * painter,
           graphModel.portData(std::get<2>(cId),
               PortType::In,
               std::get<3>(cId),
-              PortRole::DataType).toString();
+              PortRole::DataType).toInt();
 
       auto it = nodeStyleIn.ConnectionPointColorMap.find(dataTypeIn);
       if (it != nodeStyleIn.ConnectionPointColorMap.end())

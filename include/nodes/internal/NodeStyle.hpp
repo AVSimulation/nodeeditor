@@ -44,7 +44,7 @@ public:
   QColor FontColor;
   QColor FontColorFaded;
   QColor ConnectionPointColor;
-  QMap<QString, QColor> ConnectionPointColorMap;
+  QMap<int, QColor> ConnectionPointColorMap;
   QColor FilledConnectionPointColor;
   QColor WarningColor;
   QColor ErrorColor;

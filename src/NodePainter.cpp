@@ -176,7 +176,7 @@ drawConnectionPoints(QPainter * painter,
       QJsonDocument json =
         QJsonDocument::fromVariant(model.nodeData(nodeId, NodeRole::Style));
       NodeStyle nodeStyle(json);
-      const auto portDataType = model.portData(nodeId, portType, portIndex, PortRole::DataType).toString();
+      const auto portDataType = model.portData(nodeId, portType, portIndex, PortRole::DataType).toInt();
       const auto it = nodeStyle.ConnectionPointColorMap.find(portDataType);
       auto color = nodeStyle.ConnectionPointColor;
       if (it != nodeStyle.ConnectionPointColorMap.end())
@@ -255,7 +255,7 @@ drawFilledConnectionPoints(QPainter * painter,
         else
         {
           QColor color = nodeStyle.FilledConnectionPointColor;
-          const auto& portData = model.portData(nodeId, portType, portIndex, PortRole::DataType).toString();
+          const auto& portData = model.portData(nodeId, portType, portIndex, PortRole::DataType).toInt();
           const auto it = nodeStyle.ConnectionPointColorMap.find(portData);
           if (it != nodeStyle.ConnectionPointColorMap.end())
               color = *it;
