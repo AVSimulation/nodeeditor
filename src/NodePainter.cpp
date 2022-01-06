@@ -125,7 +125,7 @@ drawConnectionPoints(QPainter * painter,
     {
       QPointF p = geom.portNodePosition(portType, portIndex);
 
-      auto const &dataType =
+      auto const &dataCaption =
         model.portData(nodeId,
                        portType,
                        portIndex,
@@ -176,8 +176,8 @@ drawConnectionPoints(QPainter * painter,
       QJsonDocument json =
         QJsonDocument::fromVariant(model.nodeData(nodeId, NodeRole::Style));
       NodeStyle nodeStyle(json);
-      const auto portDataType = model.portData(nodeId, portType, portIndex, PortRole::DataType).toString();
-      const auto it = nodeStyle.ConnectionPointColorMap.find(portDataType);
+      const auto portColorType = model.portData(nodeId, portType, portIndex, PortRole::ColorType).toInt();
+      const auto it = nodeStyle.ConnectionPointColorMap.find(portColorType);
       auto color = nodeStyle.ConnectionPointColor;
       if (it != nodeStyle.ConnectionPointColorMap.end())
         painter->setPen(*it);
@@ -187,7 +187,7 @@ drawConnectionPoints(QPainter * painter,
 
       if (connectionStyle.useDataDefinedColors())
       {
-        painter->setBrush(connectionStyle.normalColor(dataType));
+        painter->setBrush(connectionStyle.normalColor(dataCaption));
       }
       else
       {
@@ -239,24 +239,24 @@ drawFilledConnectionPoints(QPainter * painter,
 
       if (!connectedNodes.empty())
       {
-        auto const &dataType =
+        auto const &colorType =
           model.portData(nodeId,
                          portType,
                          portIndex,
-                         PortRole::DataType).toString();
+                         PortRole::ColorType).toString();
 
         auto const &connectionStyle = StyleCollection::connectionStyle();
         if (connectionStyle.useDataDefinedColors())
         {
-          QColor const c = connectionStyle.normalColor(dataType);
+          QColor const c = connectionStyle.normalColor(colorType);
           painter->setPen(c);
           painter->setBrush(c);
         }
         else
         {
           QColor color = nodeStyle.FilledConnectionPointColor;
-          const auto& portData = model.portData(nodeId, portType, portIndex, PortRole::DataType).toString();
-          const auto it = nodeStyle.ConnectionPointColorMap.find(portData);
+          const auto& portColorType = model.portData(nodeId, portType, portIndex, PortRole::ColorType).toInt();
+          const auto it = nodeStyle.ConnectionPointColorMap.find(portColorType);
           if (it != nodeStyle.ConnectionPointColorMap.end())
               color = *it;
           painter->setPen(color);

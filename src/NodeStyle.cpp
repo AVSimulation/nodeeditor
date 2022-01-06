@@ -86,9 +86,9 @@ setNodeStyle(QString jsonText)
         auto keyValue = item.split("/"); \
         if(keyValue.size() != 2) \
             continue; \
-        auto name = keyValue[0]; \
+        auto type = keyValue[0].toInt(); \
         QColor color(keyValue[1]); \
-        variable.insert(name, color); \
+        variable.insert(type, color); \
     } \
 }
 
@@ -98,11 +98,11 @@ setNodeStyle(QString jsonText)
 
 #define NODE_STYLE_WRITE_COLOR_MAP(values, variable)  { \
     QString mapStr = ""; \
-    QMapIterator<QString, QColor> it(variable); \
+    QMapIterator<int, QColor> it(variable); \
     while (it.hasNext()) \
     { \
         it.next(); \
-        mapStr += it.key(); \
+        mapStr += QString::number(it.key()); \
         mapStr += "/"; \
         mapStr += it.value().name(); \
         mapStr += ";"; \

@@ -179,22 +179,22 @@ drawNormalLine(QPainter * painter,
 
     auto const cId = cgo.connectionId();
 
-    auto dataTypeOut =
+    auto colorTypeOut =
       graphModel.portData(std::get<0>(cId),
                           PortType::Out,
                           std::get<1>(cId),
-                          PortRole::DataType).toString();
+                          PortRole::ColorType).toString();
 
-    auto dataTypeIn =
+    auto colorTypeIn =
       graphModel.portData(std::get<2>(cId),
                           PortType::In,
                           std::get<3>(cId),
-                          PortRole::DataType).toString();
+                          PortRole::ColorType).toString();
 
-    useGradientColor = (dataTypeOut != dataTypeIn);
+    useGradientColor = (colorTypeOut != colorTypeIn);
 
-    normalColorOut = connectionStyle.normalColor(dataTypeOut);
-    normalColorIn  = connectionStyle.normalColor(dataTypeIn);
+    normalColorOut = connectionStyle.normalColor(colorTypeOut);
+    normalColorIn  = connectionStyle.normalColor(colorTypeIn);
     selectedColor  = normalColorOut.darker(200);
   }
   else
@@ -205,13 +205,13 @@ drawNormalLine(QPainter * painter,
           QJsonDocument::fromVariant(graphModel.nodeData(std::get<2>(cId), NodeRole::Style));
       NodeStyle nodeStyleIn(jsonIn);
       
-      auto dataTypeIn =
+      auto colorTypeIn =
           graphModel.portData(std::get<2>(cId),
               PortType::In,
               std::get<3>(cId),
-              PortRole::DataType).toString();
+              PortRole::ColorType).toInt();
 
-      auto it = nodeStyleIn.ConnectionPointColorMap.find(dataTypeIn);
+      auto it = nodeStyleIn.ConnectionPointColorMap.find(colorTypeIn);
       if (it != nodeStyleIn.ConnectionPointColorMap.end())
       {
           normalColorIn = *it;
