@@ -314,6 +314,10 @@ mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
 
     interaction.tryConnect();
   }
+  else
+  {
+    Q_EMIT(graphModel().requestCreateNodeAndConnection(connectionId(), event->scenePos()));
+  }
 
   // If connection attempt was unsuccessful
   if (_connectionState.requiresPort())

@@ -169,6 +169,17 @@ Q_SIGNALS:
   void
   requestDeleteConnections(std::vector<ConnectionId> const &connectionId);
 
+  /**
+   * @brief Signal emitted when the creation of a node is requested when dropping
+   *        the end of a connection in the graphic view.
+   *        Only one end of the connection is valid.
+   *        The type of the node to be created can be the one of the valid end of the connection.
+   * @param connectionId    the partial connection to be used to connect the source port and the created node
+   * @param nodePosition    the position where the node must be created
+   */
+  void
+  requestCreateNodeAndConnection(ConnectionId const connectionId, QPointF const nodePosition);
+
   void
   updateNodePosition(NodeId const nodeId, QPointF const nodePosition);
 
