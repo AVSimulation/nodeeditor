@@ -31,7 +31,7 @@ enum class NodeRole
   NumberOfOutPorts = 7, ///< `unsigned int`
   Widget           = 8, ///< Optional `QWidget*` or `nullptr`
   Parameters       = 9, ///< `QString` parameters of the node on the scene.
-  User             = 10,///< std::vector<QVariant> user data specific to each node
+  User             = 10 ///< QList<QVariant> user data specific to each node.
 };
 Q_ENUM_NS(NodeRole)
 
@@ -61,6 +61,7 @@ enum class PortRole
   CaptionVisible       = 3, ///< `bool` for caption visibility.
   Caption              = 4, ///< `QString` for port caption.
   ColorType            = 5, ///< `enum` describing the type recognized for colorization.
+  User                 = 6  ///< QList<QVariant> user data specific to each port
 };
 Q_ENUM_NS(PortRole)
 
