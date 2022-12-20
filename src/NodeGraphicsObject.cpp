@@ -40,6 +40,9 @@ NodeGraphicsObject(BasicGraphicsScene &scene,
   // TODO: Take style from model.
   auto const &nodeStyle = StyleCollection::nodeStyle();
 
+  // Shadows are deactivated because of performance problem
+  const bool showShadow = false;
+  if (showShadow)
   {
     auto effect = new QGraphicsDropShadowEffect;
     effect->setOffset(4, 4);
