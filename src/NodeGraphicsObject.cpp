@@ -120,6 +120,25 @@ embedQWidget()
   }
 }
 
+void
+NodeGraphicsObject::
+showToolTipOnPortIfNeeded(const NodeGeometry& geometry, const QPointF& scenePos)
+{
+    // only allow tool tip on a port on type "In", on the left of the block.
+    PortIndex const portIndex = geometry.checkHitScenePoint(PortType::In, scenePos, sceneTransform());
+
+    if (portIndex == InvalidPortIndex)
+        return;
+
+    const bool portAlreadyConnected = !_graphModel.connectedNodes(_nodeId, PortType::In, portIndex).empty();
+    if (portAlreadyConnected)
+        return;
+
+    const QString defaultValue = _graphModel.portData(_nodeId, PortType::In, portIndex, PortRole::DefaultValue).toString();
+    if (!defaultValue.isEmpty())
+        QToolTip::showText(QCursor::pos(), defaultValue);
+}
+
 
 #if 0
 void
@@ -450,6 +469,8 @@ hoverMoveEvent(QGraphicsSceneHoverEvent * event)
   auto pos = event->pos();
 
   NodeGeometry geometry(*this);
+  
+  showToolTipOnPortIfNeeded(geometry, event->scenePos());
 
   if ((_graphModel.nodeFlags(_nodeId) | NodeFlag::Resizable) &&
       geometry.resizeRect().contains(QPoint(pos.x(), pos.y())))

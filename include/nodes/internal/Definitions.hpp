@@ -61,7 +61,8 @@ enum class PortRole
   CaptionVisible       = 3, ///< `bool` for caption visibility.
   Caption              = 4, ///< `QString` for port caption.
   ColorType            = 5, ///< `enum` describing the type recognized for colorization.
-  User                 = 6  ///< QList<QVariant> user data specific to each port
+  User                 = 6, ///< QList<QVariant> user data specific to each port
+  DefaultValue         = 7, ///< 'QString' default value for a port.
 };
 Q_ENUM_NS(PortRole)
 

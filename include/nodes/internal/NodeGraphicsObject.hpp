@@ -15,6 +15,7 @@ namespace QtNodes
 
 class BasicGraphicsScene;
 class AbstractGraphModel;
+class NodeGeometry;
 
 class NODE_EDITOR_PUBLIC NodeGraphicsObject : public QGraphicsObject
 {
@@ -105,6 +106,9 @@ private:
 
   void
   embedQWidget();
+
+  void
+  showToolTipOnPortIfNeeded(const NodeGeometry& geometry, const QPointF& scenePos);
 
 private:
 
