@@ -397,10 +397,13 @@ drawEntryLabels(QPainter * painter,
         painter->setPen(nodeStyle.FontColor);
 
       QString s;
+      QString portDefaultValue;
 
       if (model.portData(nodeId, portType, portIndex, PortRole::CaptionVisible).toBool())
       {
         s = model.portData(nodeId, portType, portIndex, PortRole::Caption).toString();
+        if (connectedNodes.empty() && portType == PortType::In)
+            portDefaultValue = model.portData(nodeId, PortType::In, portIndex, PortRole::DefaultValue).toString();
       }
       else
       {
@@ -430,6 +433,18 @@ drawEntryLabels(QPainter * painter,
       }
 
       painter->drawText(p, s);
+
+      if (!portDefaultValue.isEmpty())
+      {
+          const QPointF defaultValuePos(p.x() + rect.width(), p.y());
+          const QFont previousFont = painter->font();
+          QFont font = painter->font();
+          font.setItalic(true);
+          painter->setFont(font);
+          portDefaultValue = "  (" + portDefaultValue + ")";
+          painter->drawText(defaultValuePos, portDefaultValue);
+          painter->setFont(previousFont);
+      }
     }
   }
 }

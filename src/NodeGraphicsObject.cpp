@@ -470,8 +470,6 @@ hoverMoveEvent(QGraphicsSceneHoverEvent * event)
 
   NodeGeometry geometry(*this);
   
-  showToolTipOnPortIfNeeded(geometry, event->scenePos());
-
   if ((_graphModel.nodeFlags(_nodeId) | NodeFlag::Resizable) &&
       geometry.resizeRect().contains(QPoint(pos.x(), pos.y())))
   {
