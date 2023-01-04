@@ -402,8 +402,8 @@ drawEntryLabels(QPainter * painter,
       if (model.portData(nodeId, portType, portIndex, PortRole::CaptionVisible).toBool())
       {
         s = model.portData(nodeId, portType, portIndex, PortRole::Caption).toString();
-        if (connectedNodes.empty() && portType == PortType::In)
-            portDefaultValue = model.portData(nodeId, PortType::In, portIndex, PortRole::DefaultValue).toString();
+        if (connectedNodes.empty())
+            portDefaultValue = model.portData(nodeId, portType, portIndex, PortRole::DefaultValue).toString();
       }
       else
       {
@@ -414,9 +414,9 @@ drawEntryLabels(QPainter * painter,
       }
 
       QFontMetrics const &metrics = painter->fontMetrics();
-      auto rect = metrics.boundingRect(s);
+      QRect rectPortCaption = metrics.boundingRect(s);
 
-      p.setY(p.y() + rect.height() / 4.0);
+      p.setY(p.y() + rectPortCaption.height() / 4.0);
 
       switch (portType)
       {
@@ -425,7 +425,15 @@ drawEntryLabels(QPainter * painter,
           break;
 
         case PortType::Out:
-          p.setX(size.width() - 5.0 - rect.width());
+            if (!portDefaultValue.isEmpty())
+            {
+                QRect outRect = metrics.boundingRect(geom.appendDefaultValueToPortCaption(s, portDefaultValue));
+                p.setX(size.width() - 5.0 - outRect.width());
+            }
+            else
+            {
+                p.setX(size.width() - 5.0 - rectPortCaption.width());
+            }
           break;
 
         default:
@@ -436,13 +444,12 @@ drawEntryLabels(QPainter * painter,
 
       if (!portDefaultValue.isEmpty())
       {
-          const QPointF defaultValuePos(p.x() + rect.width(), p.y());
+          const QPointF defaultValuePos(p.x() + rectPortCaption.width(), p.y());
           const QFont previousFont = painter->font();
           QFont font = painter->font();
           font.setItalic(true);
           painter->setFont(font);
-          portDefaultValue = "  (" + portDefaultValue + ")";
-          painter->drawText(defaultValuePos, portDefaultValue);
+          painter->drawText(defaultValuePos, geom.appendDefaultValueToPortCaption("", portDefaultValue));
           painter->setFont(previousFont);
       }
     }

@@ -71,6 +71,8 @@ public:
   int
   maxInitialWidgetHeight() const;
 
+  QString appendDefaultValueToPortCaption(const QString& portCaption, const QString portDefaultValue) const;
+
 private:
 
   unsigned int

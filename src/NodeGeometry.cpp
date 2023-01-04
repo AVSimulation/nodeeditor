@@ -306,6 +306,13 @@ maxInitialWidgetHeight() const
   return size.height() - captionHeight();
 }
 
+QString
+NodeGeometry::
+appendDefaultValueToPortCaption(const QString& portCaption, const QString portDefaultValue) const
+{
+    return portCaption + "  (" + portDefaultValue + ")";
+}
+
 
 unsigned int
 NodeGeometry::
@@ -364,6 +371,10 @@ portWidth(PortType portType) const
         _graphModel.portData(nodeId, portType, portIndex, PortRole::Caption);
 
       name = portData.toString();
+    
+      const QString defaultValue = _graphModel.portData(nodeId, portType, portIndex, PortRole::DefaultValue).toString();
+      if (!defaultValue.isEmpty())
+          name = appendDefaultValueToPortCaption(name, defaultValue);
     }
     else
     {
