@@ -86,6 +86,8 @@ namespace QtNodes
 	Q_SIGNALS:
 		void nodeDoubleClicked(NodeId const nodeId);
 		void nodeHovered(NodeId const nodeId, QPoint const screenPos);
+		void nodePortHovered(NodeId const nodeId, PortIndex portIndex, PortType portType);
+		void nodePortLeft(NodeId const nodeId, PortIndex portIndex, PortType portType);
 		void nodeHoverLeft(NodeId const nodeId);
 		void connectionHovered(ConnectionId const connectionId, QPoint const screenPos);
 		void connectionHoverLeft(ConnectionId const connectionId);

@@ -26,6 +26,7 @@ NodeGraphicsObject(BasicGraphicsScene &scene,
   , _graphModel(scene.graphModel())
   , _nodeState(*this)
   , _proxyWidget(nullptr)
+  , myLastPortHovered()
 {
   scene.addItem(this);
 
@@ -118,25 +119,6 @@ embedQWidget()
     _proxyWidget->setOpacity(1.0);
     _proxyWidget->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
   }
-}
-
-void
-NodeGraphicsObject::
-showToolTipOnPortIfNeeded(const NodeGeometry& geometry, const QPointF& scenePos)
-{
-    // only allow tool tip on a port on type "In", on the left of the block.
-    PortIndex const portIndex = geometry.checkHitScenePoint(PortType::In, scenePos, sceneTransform());
-
-    if (portIndex == InvalidPortIndex)
-        return;
-
-    const bool portAlreadyConnected = !_graphModel.connectedNodes(_nodeId, PortType::In, portIndex).empty();
-    if (portAlreadyConnected)
-        return;
-
-    const QString defaultValue = _graphModel.portData(_nodeId, PortType::In, portIndex, PortRole::DefaultValue).toString();
-    if (!defaultValue.isEmpty())
-        QToolTip::showText(QCursor::pos(), defaultValue);
 }
 
 
@@ -437,7 +419,9 @@ hoverEnterEvent(QGraphicsSceneHoverEvent * event)
   setZValue(1.0);
 
   _nodeState.setHovered(true);
-
+  //update the tooltip
+  setToolTip(_graphModel.nodeData(_nodeId, NodeRole::Tooltip).toString());
+  updateToolTip(event->scenePos());
   update();
 
   // Signal
@@ -453,6 +437,9 @@ hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
   _nodeState.setHovered(false);
 
+  //update the tooltip
+  updateToolTip(event->scenePos());
+
   update();
 
   // Signal HoverLeft to the scene()
@@ -466,6 +453,8 @@ void
 NodeGraphicsObject::
 hoverMoveEvent(QGraphicsSceneHoverEvent * event)
 {
+    updateToolTip(event->scenePos());
+
   auto pos = event->pos();
 
   NodeGeometry geometry(*this);
@@ -479,7 +468,7 @@ hoverMoveEvent(QGraphicsSceneHoverEvent * event)
   {
     setCursor(QCursor());
   }
-
+ 
   event->accept();
 }
 
@@ -501,5 +490,38 @@ contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
   Q_EMIT nodeScene()->nodeContextMenu(_nodeId, mapToScene(event->pos()));
 }
 
+void NodeGraphicsObject::updateToolTip(const QPointF position)
+{
+    QtNodes::NodeGeometry geometry(*this);
+
+    //check wether a port was hovered or not
+    QtNodes::PortIndex inPortIndex = geometry.checkHitScenePoint(QtNodes::PortType::In, position, sceneTransform());
+    QtNodes::PortIndex outPortIndex = geometry.checkHitScenePoint(QtNodes::PortType::Out, position, sceneTransform());
+
+    Port newHoveredPort;
+
+    QString tooltip;
+    if (inPortIndex != QtNodes::InvalidPortIndex)
+    {
+        newHoveredPort.portIndex = inPortIndex;
+        newHoveredPort.portType = QtNodes::PortType::In;
+       
+    }
+    if (outPortIndex != QtNodes::InvalidPortIndex)
+    {
+        newHoveredPort.portIndex = outPortIndex;
+        newHoveredPort.portType = QtNodes::PortType::Out;
+    }
+
+    if (newHoveredPort != myLastPortHovered)
+    {
+        myLastPortHovered = newHoveredPort;
+        if (myLastPortHovered.portIndex != QtNodes::InvalidPortIndex)
+            setToolTip(_graphModel.portData(_nodeId, myLastPortHovered.portType, myLastPortHovered.portIndex, PortRole::Tooltip).toString());
+        else
+            setToolTip(_graphModel.nodeData(_nodeId, NodeRole::Tooltip).toString());
+    }
+}
 
 }
+

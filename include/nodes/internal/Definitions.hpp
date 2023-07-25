@@ -31,7 +31,8 @@ enum class NodeRole
   NumberOfOutPorts = 7, ///< `unsigned int`
   Widget           = 8, ///< Optional `QWidget*` or `nullptr`
   Parameters       = 9, ///< `QString` parameters of the node on the scene.
-  User             = 10 ///< QList<QVariant> user data specific to each node.
+  User             = 10, ///< QList<QVariant> user data specific to each node.
+  Tooltip          = 11 ///< QString: a tooltip to display when the node is hovered (optional)
 };
 Q_ENUM_NS(NodeRole)
 
@@ -63,6 +64,7 @@ enum class PortRole
   ColorType            = 5, ///< `enum` describing the type recognized for colorization.
   User                 = 6, ///< QList<QVariant> user data specific to each port
   DefaultValue         = 7, ///< 'QString' default value for a port.
+  Tooltip = 8               ///< QString: a tooltip to display when the port is hovered (optional)
 };
 Q_ENUM_NS(PortRole)
 
@@ -107,4 +109,23 @@ static constexpr NodeId InvalidNodeId =
 using ConnectionId = std::tuple<NodeId, PortIndex,  // Port Out
                                 NodeId, PortIndex>; // Port In
 
+//a structure to ease ports manipulations.
+struct Port
+{
+    PortIndex portIndex;
+    PortType portType;
+
+    Port(): portIndex(InvalidPortIndex), portType(PortType::None){}
+
+    bool operator==(const Port& other)
+    {
+        return portIndex == other.portIndex &&
+            portType == other.portType;
+    }
+    bool operator!=(const Port& other)
+    {
+        return portIndex != other.portIndex ||
+            portType != other.portType;
+    }
+};
 }

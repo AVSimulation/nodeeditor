@@ -102,13 +102,17 @@ protected:
   void
   contextMenuEvent(QGraphicsSceneContextMenuEvent* event) override;
 
+  /**
+   * \brief Updates the tooltip
+   *        The tooltip changes based on whether a port is being hoverred or the node is being hoverred
+   * \param position    The hoverring position
+   */
+  void updateToolTip(const QPointF position);
+
 private:
 
   void
   embedQWidget();
-
-  void
-  showToolTipOnPortIfNeeded(const NodeGeometry& geometry, const QPointF& scenePos);
 
 private:
 
@@ -122,5 +126,7 @@ private:
 
   // either nullptr or owned by parent QGraphicsItem
   QGraphicsProxyWidget * _proxyWidget;
+
+  Port myLastPortHovered;
 };
 }
