@@ -64,7 +64,10 @@ enum class PortRole
   ColorType            = 5, ///< `enum` describing the type recognized for colorization.
   User                 = 6, ///< QList<QVariant> user data specific to each port
   DefaultValue         = 7, ///< 'QString' default value for a port.
-  Tooltip = 8               ///< QString: a tooltip to display when the port is hovered (optional)
+  Tooltip              = 8, ///< QString: a tooltip to display when the port is hovered (optional)
+  Unit                 = 9, ///< QString: The unit of the port (empty if no unit)
+  Description          = 10 ///< QString: The port description (empty if none)
+
 };
 Q_ENUM_NS(PortRole)
 
