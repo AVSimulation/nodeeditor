@@ -35,6 +35,9 @@ public:
   QRectF
   boundingRect() const;
 
+  QRectF
+  captionBoundingRect(QTransform const& t) const;
+
   QSize
   size() const;
 
@@ -49,6 +52,11 @@ public:
   QPointF
   portNodePosition(PortType const  portType,
                    PortIndex const index) const;
+
+  QRectF
+  portCaptionRect(PortType const  portType,
+                   PortIndex const index,
+                   QTransform const &t) const;
 
   QPointF
   portScenePosition(PortType const     portType,
@@ -97,8 +105,8 @@ private:
   mutable unsigned int _defaultOutPortWidth;
   mutable unsigned int _entryHeight;
   unsigned int _verticalSpacing;
-  mutable QFontMetrics _fontMetrics;
-  mutable QFontMetrics _boldFontMetrics;
+  mutable QFontMetricsF _fontMetrics;
+  mutable QFontMetricsF _boldFontMetrics;
 };
 
 }

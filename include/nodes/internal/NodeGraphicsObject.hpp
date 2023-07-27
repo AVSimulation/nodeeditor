@@ -128,5 +128,6 @@ private:
   QGraphicsProxyWidget * _proxyWidget;
 
   Port myLastPortHovered;
+  bool isCaptionHovered;
 };
 }

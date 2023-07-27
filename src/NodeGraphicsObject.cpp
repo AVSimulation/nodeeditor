@@ -27,6 +27,7 @@ NodeGraphicsObject(BasicGraphicsScene &scene,
   , _nodeState(*this)
   , _proxyWidget(nullptr)
   , myLastPortHovered()
+  , isCaptionHovered(false)
 {
   scene.addItem(this);
 
@@ -420,7 +421,6 @@ hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 
   _nodeState.setHovered(true);
   //update the tooltip
-  setToolTip(_graphModel.nodeData(_nodeId, NodeRole::Tooltip).toString());
   updateToolTip(event->scenePos());
   update();
 
@@ -501,26 +501,58 @@ void NodeGraphicsObject::updateToolTip(const QPointF position)
     Port newHoveredPort;
 
     QString tooltip;
-    if (inPortIndex != QtNodes::InvalidPortIndex)
+
+    if (inPortIndex != QtNodes::InvalidPortIndex ||
+        outPortIndex != QtNodes::InvalidPortIndex)
     {
-        newHoveredPort.portIndex = inPortIndex;
-        newHoveredPort.portType = QtNodes::PortType::In;
-       
+        isCaptionHovered = false;
+        if (inPortIndex != QtNodes::InvalidPortIndex)
+        {
+            newHoveredPort.portIndex = inPortIndex;
+            newHoveredPort.portType = QtNodes::PortType::In;
+
+        }
+        if (outPortIndex != QtNodes::InvalidPortIndex)
+        {
+            newHoveredPort.portIndex = outPortIndex;
+            newHoveredPort.portType = QtNodes::PortType::Out;
+        }
+
+        if (newHoveredPort != myLastPortHovered)
+        {
+            myLastPortHovered = newHoveredPort;
+            if (myLastPortHovered.portIndex != QtNodes::InvalidPortIndex)
+                setToolTip(_graphModel.portData(_nodeId, myLastPortHovered.portType, myLastPortHovered.portIndex, PortRole::Tooltip).toString());
+            else if (geometry.captionBoundingRect(sceneTransform()).contains(position))
+                setToolTip(_graphModel.nodeData(_nodeId, NodeRole::Tooltip).toString());
+        }
     }
-    if (outPortIndex != QtNodes::InvalidPortIndex)
+    else
     {
-        newHoveredPort.portIndex = outPortIndex;
-        newHoveredPort.portType = QtNodes::PortType::Out;
+        if (myLastPortHovered.portIndex != InvalidNodeId)
+        {
+            myLastPortHovered.portIndex = InvalidPortIndex;
+            myLastPortHovered.portType = PortType::None;
+            setToolTip("");
+        }
+      
+        bool captionHovered = geometry.captionBoundingRect(sceneTransform()).contains(position);
+        if (captionHovered && !isCaptionHovered)
+        {
+            isCaptionHovered = true;
+            setToolTip(_graphModel.nodeData(_nodeId, NodeRole::Tooltip).toString());
+        }
+        else if (!captionHovered && isCaptionHovered)
+        {
+            isCaptionHovered = false;
+            setToolTip("");
+        }
     }
 
-    if (newHoveredPort != myLastPortHovered)
-    {
-        myLastPortHovered = newHoveredPort;
-        if (myLastPortHovered.portIndex != QtNodes::InvalidPortIndex)
-            setToolTip(_graphModel.portData(_nodeId, myLastPortHovered.portType, myLastPortHovered.portIndex, PortRole::Tooltip).toString());
-        else
-            setToolTip(_graphModel.nodeData(_nodeId, NodeRole::Tooltip).toString());
-    }
+  
+
+   
+   
 }
 
 }

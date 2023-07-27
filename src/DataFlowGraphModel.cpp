@@ -297,22 +297,7 @@ setNodeData(NodeId   nodeId,
       }
       break;
 
-    case NodeRole::CaptionVisible:
-      break;
-
-    case NodeRole::Caption:
-      break;
-
-    case NodeRole::Style:
-      break;
-
-    case NodeRole::NumberOfInPorts:
-      break;
-
-    case NodeRole::NumberOfOutPorts:
-      break;
-
-    case NodeRole::Widget:
+    default:
       break;
   }
 
@@ -361,6 +346,8 @@ portData(NodeId    nodeId,
       result = model->portCaption(portType, portIndex);
 
       break;
+    default:
+        break;
   }
 
   return result;

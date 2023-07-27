@@ -53,9 +53,6 @@ QRectF
 NodeGeometry::
 boundingRect() const
 {
-  NodeId nodeId = _ngo.nodeId();
-
-  auto const &style     = _graphModel.nodeData(nodeId, NodeRole::Style);
   auto const &nodeStyle = StyleCollection::nodeStyle();
 
   double addon = 4 * nodeStyle.ConnectionPointDiameter;
@@ -67,6 +64,23 @@ boundingRect() const
                 0 - addon,
                 size.width() + 2 * addon,
                 size.height() + 2 * addon);
+}
+
+QRectF
+NodeGeometry::
+captionBoundingRect(QTransform const& t) const
+{
+    QPointF origin(0, 0);
+    origin = t.map(origin);
+
+    const auto height = (verticalSpacing() + entryHeight()) / 3.0 + entryHeight();
+    float diam = StyleCollection::nodeStyle().ConnectionPointDiameter;
+
+    QRectF boundary(origin.x()-diam, origin.y() -diam,
+        2.0 * diam + size().width(),
+        height);
+
+    return boundary;
 }
 
 
@@ -200,6 +214,67 @@ portNodePosition(PortType const  portType,
 }
 
 
+QRectF
+NodeGeometry::
+portCaptionRect(PortType const  portType,
+                 PortIndex const index,
+                QTransform const& transform) const
+{
+  auto const &nodeStyle = StyleCollection::nodeStyle();
+
+  QRectF result;
+  QPointF captionPoint = portNodePosition(portType, index);
+  captionPoint = transform.map(captionPoint);
+ 
+  QString fullCaption;
+  QString portDefaultValue;
+  auto const& connectedNodes = _graphModel.connectedNodes(_ngo.nodeId(), portType, index);
+
+  if (_graphModel.portData(_ngo.nodeId(), portType, index, PortRole::CaptionVisible).toBool())
+  {
+      fullCaption = _graphModel.portData(_ngo.nodeId(), portType, index, PortRole::Caption).toString();
+      if (connectedNodes.empty())
+          portDefaultValue = _graphModel.portData(_ngo.nodeId(), portType, index, PortRole::DefaultValue).toString();
+  }
+  else
+  {
+      auto portData =
+          _graphModel.portData(_ngo.nodeId(), portType, index, PortRole::DataType);
+
+      fullCaption = portData.value<NodeDataType>().name;
+  }
+
+  if (portType == PortType::Out && !portDefaultValue.isEmpty())
+  {
+      fullCaption = appendDefaultValueToPortCaption(fullCaption, portDefaultValue);
+  }
+
+  double x1, y1, x2, y2; //left, top, right, bottom
+  QRectF rectPortCaption = _fontMetrics.boundingRect(fullCaption);
+
+  double margin = 5.0;
+  x1 = captionPoint.x();
+  x2 = captionPoint.x();
+  y1 = captionPoint.y() - std::abs(rectPortCaption.height() / 2.0);
+  y2 = captionPoint.y() + std::abs(rectPortCaption.height() / 2.0);
+  double radius = std::abs(nodeStyle.ConnectionPointDiameter / 2.0);
+  switch (portType)
+  {
+  case PortType::In:
+      x1 = captionPoint.x() - radius - margin;
+      x2 = captionPoint.x() + radius + std::abs(rectPortCaption.width()) + margin;
+      break;
+  case PortType::Out:
+      x1 = captionPoint.x() - radius - std::abs(rectPortCaption.width()) - margin;
+      x2 = captionPoint.x() + radius + margin;
+      break;
+  }
+  
+  result.setCoords(x1, y1, x2, y2);
+  return result;
+}
+
+
 QPointF
 NodeGeometry::
 portScenePosition(PortType const    portType,
@@ -238,16 +313,12 @@ checkHitScenePoint(PortType portType,
 
   for (unsigned int portIndex = 0; portIndex < n; ++portIndex)
   {
-    auto pp = portScenePosition(portType, portIndex, sceneTransform);
-
-    QPointF p     = pp - scenePoint;
-    auto distance = std::sqrt(QPointF::dotProduct(p, p));
-
-    if (distance < tolerance)
-    {
-      result = portIndex;
-      break;
-    }
+      auto rect = portCaptionRect(portType, portIndex, sceneTransform);
+      if (rect.contains(scenePoint.x(), scenePoint.y()))
+      {
+          result = portIndex;
+          break;
+      }
   }
 
   return result;
