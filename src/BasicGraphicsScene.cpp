@@ -238,7 +238,7 @@ namespace QtNodes
     //------------------------------------------------------------------------------------------
     void BasicGraphicsScene::onNodeCreated(NodeId const nodeId)
     {
-        _nodeGraphicsObjects[nodeId] = std::make_unique<NodeGraphicsObject>(*this, nodeId);
+       _nodeGraphicsObjects[nodeId] = std::make_unique<NodeGraphicsObject>(*this, nodeId);
     }
 
     //------------------------------------------------------------------------------------------

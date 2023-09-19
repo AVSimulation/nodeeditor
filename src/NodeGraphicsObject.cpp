@@ -99,6 +99,7 @@ embedQWidget()
                                     NodeRole::Widget).value<QWidget*>())
   {
     _proxyWidget = new QGraphicsProxyWidget(this);
+    connect(_proxyWidget, &QGraphicsWidget::geometryChanged, this, &NodeGraphicsObject::onEmbededWidgetGeometryChanged);
 
     _proxyWidget->setWidget(w);
 
@@ -548,11 +549,14 @@ void NodeGraphicsObject::updateToolTip(const QPointF position)
             setToolTip("");
         }
     }
-
-  
-
    
    
+}
+
+
+void NodeGraphicsObject::onEmbededWidgetGeometryChanged()
+{
+    Q_EMIT graphModel().nodeDataChanged(_nodeId, NodeRole::Size);
 }
 
 }

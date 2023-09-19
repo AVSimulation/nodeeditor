@@ -68,6 +68,12 @@ public:
   void
   reactToConnection(ConnectionGraphicsObject const * cgo);
 
+private Q_SLOTS:
+    /**
+     * \brief   Called when the embedded widget geometry changed
+     */
+    void onEmbededWidgetGeometryChanged();
+
 protected:
 
   void
