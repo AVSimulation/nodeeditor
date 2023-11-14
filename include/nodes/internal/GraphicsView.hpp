@@ -20,6 +20,12 @@ namespace QtNodes
 		Q_OBJECT
 
 	public:
+		enum class ECenturingMode
+		{
+			ALWAYS_CENTER,
+			CENTER_ON_FIRST_SHOW //default mode
+		};
+
 		GraphicsView(QWidget *parent = Q_NULLPTR);
 		GraphicsView(BasicGraphicsScene *scene, QWidget *parent = Q_NULLPTR);
 		GraphicsView(const GraphicsView &) = delete;
@@ -28,6 +34,12 @@ namespace QtNodes
 		QAction* clearSelectionAction() const;
 		QAction* deleteSelectionAction() const;
 		void setScene(BasicGraphicsScene *scene);
+
+		/**
+		 * \brief	Sets a specific centering mode
+		 * \param mode	The new centering mode
+		 */
+		void setCenteringMode(ECenturingMode mode);
 		void centerScene();
 
 	public Q_SLOTS:
@@ -57,5 +69,7 @@ namespace QtNodes
 		QAction* _clearSelectionAction;
 		QAction* _deleteSelectionAction;
 		QPointF _clickPos;
+		ECenturingMode myCenteringMode; //!< Centering mode
+		bool isFirstShow;				//!< True if this is the first show event, false otherwise
 	};
 }

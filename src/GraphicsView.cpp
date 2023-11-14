@@ -22,7 +22,9 @@ using QtNodes::BasicGraphicsScene;
 
 GraphicsView::GraphicsView(QWidget *parent) : QGraphicsView(parent)
   , _clearSelectionAction(Q_NULLPTR)
-  , _deleteSelectionAction(Q_NULLPTR)
+  , _deleteSelectionAction(Q_NULLPTR),
+    isFirstShow(true),
+    myCenteringMode(ECenturingMode::CENTER_ON_FIRST_SHOW)
 {
   setDragMode(QGraphicsView::ScrollHandDrag);
   setRenderHint(QPainter::Antialiasing);
@@ -75,6 +77,12 @@ void GraphicsView::setScene(BasicGraphicsScene *scene)
   connect(_deleteSelectionAction, &QAction::triggered,
           this, &GraphicsView::deleteSelectedObjects);
   addAction(_deleteSelectionAction);
+}
+
+//-----------------------------------------------------
+void GraphicsView::setCenteringMode(ECenturingMode mode)
+{
+    myCenteringMode = mode;
 }
 
 //-----------------------------------------------------
@@ -309,7 +317,12 @@ void GraphicsView::showEvent(QShowEvent *event)
   QGraphicsView::showEvent(event);
 
   scene()->setSceneRect(this->rect());
-  centerScene();
+
+  if (myCenteringMode == ECenturingMode::ALWAYS_CENTER ||
+      (isFirstShow && myCenteringMode == ECenturingMode::CENTER_ON_FIRST_SHOW))
+      centerScene();
+
+  isFirstShow = false;
 }
 
 //-----------------------------------------------------
