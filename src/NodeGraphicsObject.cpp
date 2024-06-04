@@ -479,7 +479,7 @@ NodeGraphicsObject::
 mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 {
   QGraphicsItem::mouseDoubleClickEvent(event);
-
+  nodeScene()->resetDraftConnection(); //hide any draft connections that were created by the double clicking
   Q_EMIT nodeScene()->nodeDoubleClicked(_nodeId);
 }
 
