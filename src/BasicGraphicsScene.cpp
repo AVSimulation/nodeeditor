@@ -34,7 +34,8 @@ namespace QtNodes
     //------------------------------------------------------------------------------------------
     BasicGraphicsScene::BasicGraphicsScene(AbstractGraphModel &graphModel, QObject* parent) :
         QGraphicsScene(parent),
-        _graphModel(graphModel)
+        _graphModel(graphModel),
+        myDraftConnection(nullptr)
     {
 
       connect(&_graphModel, &AbstractGraphModel::connectionCreated,
@@ -99,7 +100,8 @@ namespace QtNodes
     //------------------------------------------------------------------------------------------
     void BasicGraphicsScene::resetDraftConnection()
     {
-        myDraftConnection->hide();
+        if(myDraftConnection)
+            myDraftConnection->hide();
     }
 
     //------------------------------------------------------------------------------------------
