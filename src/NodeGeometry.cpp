@@ -13,10 +13,8 @@
 #include <cmath>
 
 using QtNodes::NodeGeometry;
-using QtNodes::NodeDataModel;
 using QtNodes::PortIndex;
 using QtNodes::PortType;
-using QtNodes::Node;
 
 namespace QtNodes
 {

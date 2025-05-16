@@ -7,6 +7,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QVariant>
+#include <QPointF>
 
 #include "Definitions.hpp"
 #include "ConnectionIdHash.hpp"
