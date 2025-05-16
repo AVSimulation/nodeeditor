@@ -1,14 +1,22 @@
 #include "NodeGeometry.hpp"
 
-#include <iostream>
-#include <cmath>
-
 #include <QtWidgets/QWidget>
 
 #include "AbstractGraphModel.hpp"
 #include "Definitions.hpp"
 #include "NodeGraphicsObject.hpp"
 #include "StyleCollection.hpp"
+
+#include <QtGlobal>
+
+#include <iostream>
+#include <cmath>
+
+using QtNodes::NodeGeometry;
+using QtNodes::NodeDataModel;
+using QtNodes::PortIndex;
+using QtNodes::PortType;
+using QtNodes::Node;
 
 namespace QtNodes
 {
@@ -454,8 +462,13 @@ portWidth(PortType portType) const
       name = portData.value<NodeDataType>().name;
     }
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    width = std::max(unsigned(_fontMetrics.horizontalAdvance(name)),
+                     width);
+#else
     width = std::max(unsigned(_fontMetrics.width(name)),
                      width);
+#endif
   }
 
   return width;

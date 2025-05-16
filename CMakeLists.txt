@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
-# version 3.4 is required as other do not work with C++14 and clang
+cmake_minimum_required(VERSION 3.8)
 
 project(QtNodes CXX)
 
@@ -7,6 +6,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
+set(OpenGL_GL_PREFERENCE LEGACY)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 get_directory_property(_has_parent PARENT_DIRECTORY)
@@ -43,15 +43,27 @@ endif()
 add_subdirectory(external)
 
 
+# Find the QtWidgets library
+find_package(Qt6
+  REQUIRED COMPONENTS
+   Core
+   Widgets
+   Gui
+   OpenGL
+)
 
-# Find the Externals library
-FIND_PACKAGE(Qt5Widgets REQUIRED)
-FIND_PACKAGE(Qt5OpenGL REQUIRED)
-FIND_PACKAGE(Qt5Core REQUIRED)
-FIND_PACKAGE(Qt5Gui REQUIRED)
+if (NOT Qt6_FOUND)
+  find_package(Qt5 5.15
+    REQUIRED COMPONENTS
+     Core
+     Widgets
+     Gui
+     OpenGL
+  )
+endif()
 
 
-qt5_add_resources(RESOURCES ./resources/resources.qrc)
+qt_add_resources(RESOURCES ./resources/resources.qrc)
 
 # Unfortunately, as we have a split include/src, AUTOMOC doesn't work.
 # We'll have to manually specify some files
@@ -133,15 +145,14 @@ target_include_directories(nodes
 
 target_link_libraries(nodes
   PUBLIC
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Gui
-    Qt5::OpenGL
+    Qt::Core
+    Qt::Widgets
+    Qt::Gui
+    Qt::OpenGL
 )
 
 target_compile_definitions(nodes
   PUBLIC
-    ${Qt5Widgets_DEFINITIONS}
     NODE_EDITOR_SHARED
   PRIVATE
     NODE_EDITOR_EXPORTS
@@ -156,10 +167,7 @@ target_compile_options(nodes
     $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra>
 )
 
-target_compile_features(nodes
-  PUBLIC
-    cxx_generic_lambdas # Require C++14
-)
+target_compile_features(nodes PUBLIC cxx_std_14)
 
 set_target_properties(nodes
   PROPERTIES
@@ -174,7 +182,7 @@ set_target_properties(nodes
 
 file(GLOB_RECURSE HEADERS_TO_MOC include/nodes/internal/*.hpp)
 
-qt5_wrap_cpp(nodes_moc
+qt_wrap_cpp(nodes_moc
     ${HEADERS_TO_MOC}
   TARGET nodes
   OPTIONS --no-notes # Don't display a note for the headers which don't produce a moc_*.cpp
